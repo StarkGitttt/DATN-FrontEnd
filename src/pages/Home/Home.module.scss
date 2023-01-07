@@ -101,6 +101,7 @@
       }
    }
    .brands {
+      margin: 15px 0;
       .item {
          img {
             opacity: 0.25;
@@ -296,7 +297,7 @@
                         align-items: center;
                         gap: 10px;
                         .menu-title {
-                           font-size: var(--fs-4);
+                           font-size: var(--fs-5);
                            color: var(--sonic-silver);
                            font-weight: var(--weight-500);
                         }
@@ -959,7 +960,8 @@
       #CATEGORY
    */
    .category-item {
-      min-width: calc(33.33% - 20px) !important;
+      // min-width: calc(33.33% - 20px) !important;
+      min-width: calc(25% - 20px) !important;
    }
    .category-img-box {
       padding: 10px;

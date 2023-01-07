@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import classNames from 'classnames/bind';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -9,12 +10,16 @@ import {
    faCartShopping,
    faHeart,
    faSearch,
+   faXmark,
 } from '@fortawesome/free-solid-svg-icons';
 import Image from '~/components/reuse/Image';
 import images from '~/assets/images';
+import LoginForm from '~/components/reuse/LoginForm';
 
 const cx = classNames.bind(styles);
 function Header() {
+   const [showCartMini, setShowCartMini] = useState(false);
+   const [showLoginForm, setShowLoginForm] = useState(false);
    return (
       <div className={cx('wrapper')}>
          <div className={cx('header')}>
@@ -36,11 +41,24 @@ function Header() {
                   </div>
                   <div className={cx('right')}>
                      <ul className={cx('flex', 'items-center', 'main-links')}>
-                        <li>
-                           <Link to={'/'}>Sign Up</Link>
+                        <li onClick={() => setShowLoginForm(!showLoginForm)}>
+                           <p>Sign in</p>
                         </li>
                         <li>
-                           <Link to={'/'}>My Account</Link>
+                           <Link to={'/'}>
+                              My Account <FontAwesomeIcon icon={faAngleDown} />
+                           </Link>
+                           <ul className={cx('sub-menu')}>
+                              <li>
+                                 <Link to={'/profile/updateinfo'}>Update info</Link>
+                              </li>
+                              <li>
+                                 <Link to={'/profile/changepass'}>Change password</Link>
+                              </li>
+                              <li>
+                                 <Link to={'/'}>Logout</Link>
+                              </li>
+                           </ul>
                         </li>
                         <li>
                            <Link to={'/'}>Order Tracking</Link>
@@ -240,7 +258,7 @@ function Header() {
                               </div>
                            </Link>
                         </li>
-                        <li>
+                        <li onClick={() => setShowCartMini(!showCartMini)}>
                            <Link to={'/'} className={cx('iscart')}>
                               <div className={cx('icon-large', 'relative', 'flex', 'items-center')}>
                                  <FontAwesomeIcon icon={faCartShopping} />
@@ -253,6 +271,36 @@ function Header() {
                                  <div className={cx('cart-total')}>$0.00</div>
                               </div>
                            </Link>
+                           {/* <div className={cx('mini-cart')}>
+                              <div className={cx('content')}>
+                                 <div className={cx('cart-head')}>5 items in cart</div>
+                                 <div className={cx('cart-body')}>
+                                    <ul className={cx('products', 'mini')}>
+                                       <li className={cx('item', 'flex')}>
+                                          <div className={cx('thumbnail', 'object-cover')}>
+                                             <Link to={'/'}>
+                                                <Image src={images.thumbnail} />
+                                             </Link>
+                                          </div>
+                                          <div className={cx('item-content')}>
+                                             <p>
+                                                <Link to={'/'}>Dimmable Ceiling Light Modern</Link>
+                                             </p>
+                                             <span className={cx('price')}>
+                                                <span>$279.09</span>
+                                                <span className={cx('fly-item')}>
+                                                   <span>2x</span>
+                                                </span>
+                                             </span>
+                                          </div>
+                                          <Link to={'/'} classNames="item-remove">
+                                             <FontAwesomeIcon icon={faXmark} />
+                                          </Link>
+                                       </li>
+                                    </ul>
+                                 </div>
+                              </div>
+                           </div> */}
                         </li>
                      </ul>
                   </div>
@@ -285,7 +333,56 @@ function Header() {
                   </div>
                </div>
             </div>
+            {/* Cart mini */}
+            <div>
+               <div className={cx('shopping-cart', showCartMini ? styles.active : '')}>
+                  <div className={cx('box')}>
+                     <FontAwesomeIcon icon={faXmark} />
+                     <div className={cx('box-img')}>
+                        <Image src={images.thumbnail} alt="" />
+                     </div>
+                     <div className={cx('content')}>
+                        <h3>Cây chùi nhà đa năng</h3>
+                        <span className={cx('price')}>$4.99/-</span>
+                        <span className={cx('quantity')}>qty : 1</span>
+                     </div>
+                  </div>
+                  <div className={cx('box')}>
+                     <FontAwesomeIcon icon={faXmark} />
+                     <div className={cx('box-img')}>
+                        <Image src={images.thumbnail} alt="" />
+                     </div>
+                     <div className={cx('content')}>
+                        <h3>Cây chùi nhà đa năng</h3>
+                        <span className={cx('price')}>$4.99/-</span>
+                        <span className={cx('quantity')}>qty : 1</span>
+                     </div>
+                  </div>
+                  <div className={cx('box')} alt="Cây chùi nhà đa năng">
+                     <FontAwesomeIcon icon={faXmark} />
+                     <div className={cx('box-img')}>
+                        <Image src={images.thumbnail} alt="" />
+                     </div>
+                     <div className={cx('content')}>
+                        <h3>Cây chùi nhà đa năng</h3>
+                        <span className={cx('price')}>$4.99/-</span>
+                        <span className={cx('quantity')}>qty : 1</span>
+                     </div>
+                  </div>
+                  <div className={cx('total')}>
+                     <h4 className="total-heading">Subtotal: </h4>
+                     <h3 className="total-price">$1,622.95</h3>
+                  </div>
+                  <Link to={'/'} className={cx('btn')}>
+                     Checkout
+                  </Link>
+                  <Link to={'/'} className={cx('btn')}>
+                     View cart
+                  </Link>
+               </div>
+            </div>
          </div>
+         <LoginForm showForm={showLoginForm} setShowForm={setShowLoginForm} />
       </div>
    );
 }
