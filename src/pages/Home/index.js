@@ -347,7 +347,7 @@ function Home() {
 
          {/* <!--- CATEGORY ---> */}
          <div className={cx('category')}>
-            <div className={cx('container-custom')}>
+            <div>
                <div className={cx('category-item-container', 'has-scrollbar')}>
                   <div className={cx('category-item')}>
                      <div className={cx('category-img-box')}>

@@ -43,6 +43,7 @@
 
    --percent100: 100%;
    --percent50: 50%;
+   --percent25: 25%;
 
    --fw3: 300;
    --fw4: 400;
@@ -50,6 +51,11 @@
    --fw6: 600;
    --fw7: 700;
    --fw8: 800;
+   --weight-300: 300;
+   --weight-400: 400;
+   --weight-500: 500;
+   --weight-600: 600;
+   --weight-700: 700;
 
    --fs-1: 2.325rem;
    --fs-2: 2.125rem;
@@ -71,6 +77,7 @@
    --border-radius-sm: 5px;
 
    --transition-timing: 0.2s ease;
+   --box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.25);
 }
 /**
  * scrollbar style
@@ -205,7 +212,8 @@ h4 {
    padding: 0 20px !important;
 }
 .main-links {
-   a {
+   a,
+   p {
       &:hover {
          color: var(--primary-color);
       }
