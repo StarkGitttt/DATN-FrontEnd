@@ -16,7 +16,8 @@
    --white-color-origin: #ffffff;
    --light-bg-color: #f2f3f5;
    --light-text-color: #7c899a;
-   --border-color: #d3d5d8;
+   --border-color: #0a021c;
+   // --border-color: #d3d5d8;
    --dark-color: #0a021c;
 
    /**
@@ -248,8 +249,9 @@ h4 {
    background-color: var(--secondary-dark-color);
    color: var(--white-color);
    &:hover {
-      background-color: var(--light-bg-color);
-      color: var(--secondary-dark-color);
+      // background-color: var(--light-bg-color);
+      // color: var(--secondary-dark-color);
+      opacity: 0.9;
    }
 }
 .light-button {
@@ -312,6 +314,37 @@ h4 {
       background-color: var(--secondary-dark-color);
    }
 }
+// CUSTOM PAGINATION
+.ant-pagination-item {
+   border-radius: var(--percent50) !important;
+   &-active {
+      border-color: var(--primary-color) !important;
+      background-color: var(--primary-color) !important;
+      a {
+         color: var(--white-color) !important;
+      }
+   }
+   a {
+      font-weight: var(--fw5);
+   }
+}
+// EXPAND SUBMENU
+.expand {
+   .js-content {
+      display: block !important;
+   }
+}
+// Custom swiper
+.related-list {
+   .swiper {
+      margin-bottom: 30px;
+      .swiper-wrapper {
+         display: grid;
+         grid-auto-flow: column;
+      }
+   }
+}
+
 // RESPONSIVE
 @media screen and (min-width: 922px) {
    .container-custom {
