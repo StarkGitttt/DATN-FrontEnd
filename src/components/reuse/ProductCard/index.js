@@ -9,7 +9,7 @@ import images from '~/assets/images';
 
 const cx = classNames.bind(styles);
 
-function ProductCard() {
+function ProductCard({ name }) {
    return (
       <div className={cx('showcase')}>
          <div className={cx('showcase-banner')}>
@@ -53,7 +53,7 @@ function ProductCard() {
             </Link>
 
             <Link to={'/'}>
-               <h3 className={cx('showcase-title')}>Mens Winter Leathers Jackets</h3>
+               <h3 className={cx('showcase-title')}>{name ? name : 'Mens Winter Leathers Jackets'}</h3>
             </Link>
 
             <div className={cx('showcase-rating')}>

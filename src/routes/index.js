@@ -1,6 +1,6 @@
 // COMPONENT NOT REQUIRED LOGIN
 import Home from '~/pages/Home';
-import Products from '~/pages/Products';
+import Category from '~/pages/Category';
 import ProductDetails from '~/pages/ProductDetails';
 import Checkout from '~/pages/Checkout';
 import OrderStatus from '~/pages/OrderStatus';
@@ -15,7 +15,7 @@ import FavoriteProducts from '~/pages/FavoriteProducts';
 // ROUTES NOT REQUIRED LOGIN
 const publicRoutes = [
    { path: '/', component: Home },
-   { path: '/products', component: Products },
+   { path: '/category/:categoryId', component: Category },
    { path: '/product/:productId', component: ProductDetails },
    { path: '/checkout', component: Checkout },
    { path: '/order/status', component: OrderStatus },
