@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import styles from './Checkout.module.scss';
 import images from '~/assets/images';
 import Image from '~/components/reuse/Image';
+import ProgressCheckout from '~/components/reuse/ProgressCheckout';
 const cx = classNames.bind(styles);
 
 function Checkout() {
@@ -265,6 +266,7 @@ function Checkout() {
                </div>
             </div>
          </div>
+         <ProgressCheckout />
       </div>
    );
 }
