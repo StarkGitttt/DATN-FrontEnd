@@ -5,7 +5,7 @@ import ProductDetails from '~/pages/ProductDetails';
 import Checkout from '~/pages/Checkout';
 import OrderStatus from '~/pages/OrderStatus';
 import SignUp from '~/pages/SignUp';
-
+import { CheckoutStepLogin, CheckoutStepShipping, CheckoutStepPayment } from '~/pages/CheckoutStep';
 // COMPONENT REQUIRED LOGIN
 import Profile from '~/pages/Profile';
 import RecoverPass from '~/pages/RecoverPassword';
@@ -18,6 +18,9 @@ const publicRoutes = [
    { path: '/category/:categoryId', component: Category },
    { path: '/product/:productId', component: ProductDetails },
    { path: '/checkout', component: Checkout },
+   { path: '/checkout/login', component: CheckoutStepLogin },
+   { path: '/checkout/shipping', component: CheckoutStepShipping },
+   { path: '/checkout/payment', component: CheckoutStepPayment },
    { path: '/order/status', component: OrderStatus },
    { path: '/signup', component: SignUp, layout: null },
 ];
