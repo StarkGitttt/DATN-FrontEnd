@@ -1,0 +1,51 @@
+.container-oder{
+    height: 340px;
+    width: 100%;
+    background-color: var(--background-color);
+    .left{
+        width: 50%;
+        float: left;
+        padding: 10px;
+        img{
+            width: 250px;
+            height: auto;
+            border: 2px solid rgb(0, 0, 0);
+            float: left;
+            margin-right: 30px;
+            margin-top: 10px;
+            margin-left: 20px;
+        }
+        span{
+            padding-top: 5px;
+            display: block;
+            color: var(--text-color);
+            padding-left: 20px;
+            font-size: 16px;
+        }
+        p{
+            color: rgb(109, 109, 109);
+            font-weight: 500;
+        }
+    }
+    .right{
+        width: 50%;
+        padding: 10px;
+        background-color: var(--onyx);
+        float: left;
+        color: white;
+        height: 100%;
+        h4{
+            margin-left: 10px;
+        }
+        span{
+            display: block;
+            width: 100%;
+            font-weight: bold;
+            background-color:var(--light-text-color);
+            text-align: right;
+            padding: 10px;
+            font-size: 16px;
+        }
+      
+    }
+}
