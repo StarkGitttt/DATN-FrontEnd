@@ -8,6 +8,22 @@
       grid-template-columns: 1fr;
       gap: 25px;
    }
+   .no-result {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      &:hover {
+         cursor: pointer;
+      }
+      p {
+         font-weight: var(--fw6);
+         text-decoration: underline;
+      }
+      svg {
+         color: var(--sonic-silver);
+      }
+   }
 }
 
 @media screen and (min-width: 480px) {

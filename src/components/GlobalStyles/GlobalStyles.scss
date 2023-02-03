@@ -209,6 +209,9 @@ h4 {
    padding-bottom: 10px;
    border-bottom: 1px solid var(--cultured);
    margin-bottom: 30px;
+   &.disable-text-transform {
+      text-transform: none;
+   }
 }
 .padding-content {
    padding: 0 20px !important;
@@ -252,7 +255,12 @@ h4 {
    &:hover {
       // background-color: var(--light-bg-color);
       // color: var(--secondary-dark-color);
+      cursor: pointer;
       opacity: 0.9;
+   }
+   &.disabled {
+      opacity: 0.5;
+      cursor: unset;
    }
 }
 .light-button {
@@ -344,6 +352,27 @@ h4 {
          grid-auto-flow: column;
       }
    }
+}
+.no-login {
+   strong {
+      &:hover {
+         cursor: pointer;
+         text-decoration: underline;
+      }
+   }
+}
+.ant-select-selection-item {
+   &::before {
+      background: url(https://png.pngtree.com/element_our/png_detail/20181227/usa-flag--vector-illustration-png_285863.jpg);
+   }
+}
+div[data-tippy-root] {
+   z-index: 15 !important;
+}
+// Error message
+.error-message {
+   color: var(--primary-color);
+   font-size: var(--font-small);
 }
 
 // RESPONSIVE

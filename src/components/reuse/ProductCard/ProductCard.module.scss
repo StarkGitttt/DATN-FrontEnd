@@ -107,6 +107,11 @@
             -webkit-transition: var(--transition-timing);
             -o-transition: var(--transition-timing);
             transition: var(--transition-timing);
+            &.active {
+               background: var(--salmon-pink);
+               color: var(--white);
+               border-color: var(--salmon-pink);
+            }
             &:hover {
                background: var(--salmon-pink);
                color: var(--white);
@@ -117,17 +122,31 @@
    }
    .showcase-content {
       padding: 15px 20px 0;
-      .showcase-category {
-         color: var(--salmon-pink);
-         font-size: var(--fs-7);
-         font-weight: var(--weight-500);
-         text-transform: uppercase;
+      .showcase-brand {
          margin-bottom: 10px;
+         .title {
+            color: var(--salmon-pink);
+            font-size: var(--fs-7);
+            font-weight: var(--weight-500);
+            text-transform: uppercase;
+         }
+         .quantity {
+            font-size: var(--fs-7);
+            font-weight: var(--fw-6);
+            color: var(--sonic-silver);
+            &::before {
+               content: 'Sl: ';
+            }
+         }
+         display: flex;
+         align-items: center;
+         justify-content: space-between;
+         flex-wrap: wrap;
       }
       .showcase-title {
          color: var(--sonic-silver);
          font-size: var(--fs-7);
-         font-weight: var(--weight-300);
+         font-weight: var(--fw-6);
          text-transform: capitalize;
          letter-spacing: 1px;
          margin-bottom: 10px;

@@ -1,0 +1,143 @@
+{
+   "header": {
+      "home": "Trang chủ",
+      "category": "Danh mục",
+      "product": "Sản phẩm",
+      "support": "Hỗ trợ",
+      "login": "Đăng nhập",
+      "introduction": "Giới thiệu",
+      "total": "Tổng cộng",
+      "manageAccount": {
+         "title": "Quản lý tài khoản",
+         "update": "Cập nhập thông tin",
+         "changePassword": "Thay đổi mật khẩu",
+         "logout": "Đăng xuất"
+      },
+      "favoriteProduct": "Sản phẩm đã thích",
+      "order": {
+         "tracking": "Theo dõi đơn hàng",
+         "management": {
+            "title": "Quản lý đơn hàng",
+            "subOrderPending": "Đơn hàng đang đặt",
+            "subOrderHistory": "Lịch sử đặt hàng"
+         }
+      }
+   },
+   "home": {
+      "swipper": {
+         "category": {
+            "searchDiscover": "Tìm và khám phá",
+            "selling": "Danh mục bán chạy",
+            "detail": "Chi tiết",
+            "all": "Chi tiết"
+         }
+      },
+      "deal": {
+         "product": {
+            "title": "Bán chạy trong ngày",
+            "sold": "Đã bán",
+            "stock": "Kho"
+         }
+      },
+      "sidebar": {
+         "suggestion": "Gợi ý",
+         "category": {
+            "title": "Danh mục"
+         },
+         "product": {
+            "title": "Sản phẩm"
+         },
+         "seller": {
+            "title": "BÁN CHẠY NHẤT"
+         }
+      },
+      "content": {
+         "product": {
+            "new": "Sản phẩm mới"
+         }
+      }
+   },
+   "cart": {
+      "addCart": "THÊM VÀO GIỎ",
+      "quantity": "Số lượng",
+      "subTotal": "Tổng tiền",
+      "empty": "Giỏ hàng trống",
+      "message": {
+         "add": {
+            "success": "Thêm {{name}} vào giỏ hàng thành công",
+            "warningMaxQty": "Số lượng tối đa sản phẩm trong kho là {{amount}} sản phẩm",
+            "warningMinQty": "Yêu cầu nhập tối thiếu {{amount}} sản phẩm",
+            "waringMaxQtyFromStore": "Số lượng sản phẩm trong giỏ hàng ({{amount}}) vượt quá số lượng sản phầm trong kho"
+         },
+         "remove": {
+            "success": "Xóa {{name}} ra khỏi giỏ hàng thành công"
+         }
+      }
+   },
+   "search": {
+      "product": {
+         "title": "Sản phẩm",
+         "placeholder": "Nhập tên sản phẩm",
+         "button": "Tìm kiếm",
+         "view": "Xem thêm",
+         "notFound": "Không tìm thấy kết quả cho"
+      }
+   },
+   "form": {
+      "login": {
+         "title": "Đăng nhập",
+         "social": "Đăng nhập với",
+         "fieldUsername": "Tài khoản",
+         "fieldPassword": "Mật khẩu",
+         "placeholderUsername": "Nhập tên tài khoản",
+         "placeholderPassword": "Nhập mật khẩu",
+         "registerMember": "Đăng ký thành viên",
+         "success": "Đăng nhập thành công",
+         "forgotPass": "Quên mật khẩu?",
+         "invalidPasswordLength": "Vui lòng nhập tối thiểu {{length}} ký tự"
+      }
+   },
+   "details": {
+      "product": {
+         "breadcrumb": {
+            "stepOne": "Trang chủ"
+         },
+         "price": "Giá",
+         "sold": "Đã bán",
+         "stock": "Kho",
+         "infomation": "Thông tin",
+         "description": "Mô tả sản phẩm",
+         "related": "Sản phẩm liên quan",
+         "notFound": "Không tìm thấy sản phẩm phù hợp"
+      }
+   },
+   "checkout": {
+      "cart": "Giỏ hàng",
+      "product": "{{amount}} Sản phẩm",
+      "products:": "{{amount}} Sản phẩm",
+      "description": "Mô tả",
+      "empty": "Giỏ hàng trống",
+      "codePromotion": {
+         "coupon": {
+            "title": "NHẬP MÃ COUPON ƯU ĐÃI",
+            "condition": "Chỉ sử dụng 1 mã cho 1 đơn hàng",
+            "placeholder": "Nhập mã giảm giá",
+            "button": "ÁP DỤNG"
+         },
+         "phone": {
+            "title": "NHẬP SỐ ĐIỆN THOẠI VIP",
+            "condition": "Chính sách khách hàng VIP",
+            "optional": "Nếu có",
+            "placeholder": "Nhập số điện thoại",
+            "button": "ÁP DỤNG"
+         }
+      },
+      "subTotal": {
+         "title": "Tạm tính",
+         "quantity": "Số lượng",
+         "transportFee": "Phí vận chuyển",
+         "total": "Tổng số",
+         "payment": "Thanh toán"
+      }
+   }
+}

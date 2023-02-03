@@ -1,0 +1,98 @@
+.search-box,
+.search-result {
+   width: 450px;
+   max-width: 450px;
+   margin-left: auto;
+}
+.search-result {
+   overflow: hidden;
+   box-shadow: rgb(0 0 0 / 12%) 0px 2px 12px;
+   .search-title {
+      padding: 5px 12px 10px 12px;
+   }
+   .view-more {
+      padding: 5px 16px;
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      align-items: center;
+      &:hover {
+         background: rgba(22, 24, 35, 0.03);
+      }
+      p {
+         text-decoration: underline;
+         font-weight: var(--fw6);
+      }
+   }
+   .empty-product {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      padding: 5px 16px;
+      &:hover {
+         text-decoration: underline;
+         cursor: pointer;
+      }
+      .icon-empty-product {
+         color: var(--sonic-silver);
+      }
+   }
+}
+form {
+   position: relative;
+   &.search {
+      input {
+         line-height: 3.25em;
+         padding: 0 7em 0 4.5em;
+         border: 0;
+         outline: 0;
+         width: var(--percent100);
+         border-radius: 7px;
+         font-size: 0.9em;
+         font-weight: var(--fw3);
+      }
+      :where(span, button[type='submit']) {
+         position: absolute;
+         top: 0;
+         padding: 0.55em 1.5em;
+         font-size: 1em;
+         color: var(--light-text-color);
+         height: var(--percent100);
+      }
+      button[type='submit'] {
+         right: 0;
+         border: 0;
+         outline: 0;
+         font-size: 0.875em;
+         font-weight: var(--fw6);
+         background-color: var(--primary-color);
+         color: var(--white-color);
+         border-radius: 0 7px 7px 0;
+         cursor: pointer;
+         transition: var(--trans-background);
+         &:hover {
+            background-color: var(--primary-color-blur);
+         }
+      }
+      .clear,
+      .loading {
+         position: absolute;
+         right: 100px;
+         top: 50%;
+         transform: translate(-50%, -50%);
+         color: var(--sonic-silver);
+      }
+      .loading {
+         animation: spinner 0.8s linear infinite;
+      }
+   }
+}
+@keyframes spinner {
+   from {
+      transform: translate(-50%, -50%) rotate(0);
+   }
+   to {
+      transform: translate(-50%, -50%) rotate(360deg);
+   }
+}

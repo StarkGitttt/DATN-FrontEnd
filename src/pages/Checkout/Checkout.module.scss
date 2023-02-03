@@ -101,7 +101,7 @@
                            .item-qty {
                               margin-bottom: 15px;
                               position: relative;
-                              width: 84px;
+                              width: 105px;
                               .control-qty {
                                  .btn-number {
                                     width: 20px;
@@ -139,6 +139,11 @@
                                  line-height: 20px;
                                  text-align: center;
                                  padding: 4px 24px;
+                                 &::-webkit-inner-spin-button,
+                                 &::-webkit-outer-spin-button {
+                                    -webkit-appearance: none;
+                                    margin: 0;
+                                 }
                               }
                            }
                            .item-price {
@@ -330,6 +335,18 @@
             }
          }
       }
+   }
+}
+.products-empty {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   gap: 10px;
+   margin: 40px 0;
+   color: var(--secondary-dark-color-blur);
+   &:hover {
+      cursor: pointer;
+      text-decoration: underline;
    }
 }
 @media screen and (max-width: 768px) {
