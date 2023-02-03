@@ -1,0 +1,143 @@
+{
+   "header": {
+      "home": "Home",
+      "category": "Category",
+      "product": "Product",
+      "support": "Support",
+      "login": "Login",
+      "introduction": "About Us",
+      "total": "Totals",
+      "manageAccount": {
+         "title": "Management Account",
+         "update": "Update infomation",
+         "changePassword": "Change password",
+         "logout": "Logout"
+      },
+      "favoriteProduct": "My favorite products",
+      "order": {
+         "tracking": "Order Tracking",
+         "management": {
+            "title": "Management Order",
+            "subOrderPending": "Pending Order",
+            "subOrderHistory": "History Order"
+         }
+      }
+   },
+   "home": {
+      "swipper": {
+         "category": {
+            "searchDiscover": "Find and discover",
+            "selling": "SELLING CATEGORY",
+            "detail": "Detail",
+            "all": "Show all"
+         }
+      },
+      "deal": {
+         "product": {
+            "title": "Deal Of The Day",
+            "sold": "Sold",
+            "stock": "Stock"
+         }
+      },
+      "sidebar": {
+         "suggestion": "Suggestion",
+         "category": {
+            "title": "Category"
+         },
+         "product": {
+            "title": "Products"
+         },
+         "seller": {
+            "title": "Best seller"
+         }
+      },
+      "content": {
+         "product": {
+            "new": "New Products"
+         }
+      }
+   },
+   "cart": {
+      "addCart": "ADD TO CART",
+      "quantity": "Quantity",
+      "subTotal": "Subtotal",
+      "empty": "Cart is empty",
+      "message": {
+         "add": {
+            "success": "Add {{name}} to cart successfully",
+            "warningMaxQty": "The maximum number of products in stock is {{amount}} product",
+            "warningMinQty": "Please enter at least {{amount}} product",
+            "waringMaxQtyFromStore": "The number of products in the Cart ({{amount}}) exceeds the number of products in stock"
+         },
+         "remove": {
+            "success": "Product {{name}} removed from cart successfully"
+         }
+      }
+   },
+   "search": {
+      "product": {
+         "title": "Products",
+         "placeholder": "Search for products",
+         "button": "Search",
+         "view": "View more",
+         "notFound": "No results found for"
+      }
+   },
+   "form": {
+      "login": {
+         "title": "Login",
+         "social": "Or login with",
+         "fieldUsername": "USERNAME",
+         "placeholderUsername": "Type your username",
+         "placeholderPassword": "Type your password",
+         "fieldPassword": "PASSWORD",
+         "registerMember": "Register member",
+         "forgotPass": "Forgot password?",
+         "success": "Login successfully",
+         "invalidPasswordLength": "Please enter min {{length}} character"
+      }
+   },
+   "details": {
+      "product": {
+         "breadcrumb": {
+            "stepOne": "Home"
+         },
+         "price": "Price",
+         "sold": "Already sold",
+         "stock": "Stock",
+         "infomation": "Infomation",
+         "description": "Description",
+         "related": "Related Products",
+         "notFound": "No matching products found"
+      }
+   },
+   "checkout": {
+      "cart": "Cart",
+      "product": "{{amount}} Product",
+      "products:": "{{amount}} Products",
+      "description": "Description",
+      "empty": "Cart is empty",
+      "codePromotion": {
+         "coupon": {
+            "title": "COUPON ENTER OFFER CODE",
+            "condition": "Only use 1 code for 1 order",
+            "placeholder": "Enter discount code",
+            "button": "APPLY"
+         },
+         "phone": {
+            "title": "ENTER VIP PHONE NUMBER",
+            "condition": "VIP customer policy",
+            "optional": "Optional",
+            "placeholder": "Enter your phone number",
+            "button": "APPLY"
+         }
+      },
+      "subTotal": {
+         "title": "Subtotal",
+         "quantity": "Quantity",
+         "transportFee": "Transport Fee",
+         "total": "Total",
+         "payment": "PAYMENT"
+      }
+   }
+}
