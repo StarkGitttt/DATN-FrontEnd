@@ -1,10 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { Pagination } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import {
-   faCaretRight,
-   faBattery,
    faPlus,
    faRectangleXmark,
    faMinus,
@@ -15,25 +14,130 @@ import {
    faReply,
    faTicket,
    faStarHalfStroke,
+   faTag,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames/bind';
+import 'swiper/css/bundle';
+
 import styles from './Home.module.scss';
 import Image from '~/components/reuse/Image';
 import ProductCard from '~/components/reuse/ProductCard';
 import images from '~/assets/images';
-import 'swiper/css/bundle';
+import { CategoryAPI, ProductAPI } from '~/api/EcommerceApi';
+import routesConfig from '~/config/routes';
+import { formatCurrency } from '~/utils';
+import constants_local from '~/constants';
 
 const cx = classNames.bind(styles);
 function Home() {
-   const [active, setAcitve] = useState(false);
+   const { t } = useTranslation();
 
+   const [active, setAcitve] = useState(false);
+   const [categories, setCategories] = useState([]);
+   const [sellingCategories, setSellingCategories] = useState([]);
+   const [newProducts, setNewProducts] = useState([]);
+   const [dealTodayProducts, setDealTodayProducts] = useState([]);
+   const [bestSellerProducts, setBestSellerProducts] = useState([]);
+   const [suggestionProducts, setSuggestionProducts] = useState([]);
+   // const calcSoldProduct = async (productId) => {
+   //    try {
+   //       const res = await ProductAPI.totalSoldByProductId({}, productId);
+   //       if (res.data) {
+   //          console.log('Response', res);
+   //          console.log('Calc sold product', res.data);
+   //          // return res.data;
+   //       }
+   //    } catch (e) {
+   //       console.log(`Get total sold product ${productId} failed `, e);
+   //    }
+   //    return 1;
+   // };
+
+   // GET CATEGORIES
+   const calcStockProcess = (product) => {
+      const totalProduct = product.totalSoldProduct + product.quantity;
+      return (product.totalSoldProduct * 100) / totalProduct;
+   };
+
+   useEffect(() => {
+      // Category
+      CategoryAPI.getAll()
+         .then((res) => {
+            if (res.data) {
+               setCategories(res.data);
+            }
+         })
+         .catch((e) => {
+            console.log(`Get categories failed: ${e}`);
+         });
+      // Category selling
+      CategoryAPI.getSelling({
+         params: {
+            page: 1,
+            limit: 3,
+         },
+      })
+         .then((res) => {
+            if (res.data) {
+               setSellingCategories(res.data);
+            }
+         })
+         .catch((e) => {
+            console.log(`Get selling categories failed: ${e}`);
+         });
+
+      // New products
+      ProductAPI.getNewProducts()
+         .then((res) => {
+            if (res.data) {
+               setNewProducts(res.data);
+            }
+         })
+         .catch((e) => {
+            console.log(`Get new products failed `, e);
+         });
+      // Get products deal of day
+      ProductAPI.getDealOfDay()
+         .then((res) => {
+            if (res.data) {
+               setDealTodayProducts(res.data);
+            }
+         })
+         .catch((e) => {
+            console.log('Get products deal of day failed', e);
+         });
+      // Get best seller products
+      ProductAPI.getBestSeller()
+         .then((res) => {
+            if (res.data) {
+               setBestSellerProducts(res.data);
+            }
+         })
+         .catch((e) => {
+            console.log('Get best seller products failed: ', e);
+         });
+      // Get suggestion products
+      ProductAPI.getBestSeller({
+         params: {
+            limit: constants_local.PRODUCT_ITEM_LIMIT,
+         },
+      })
+         .then((res) => {
+            if (res.data) {
+               setSuggestionProducts(res.data);
+            }
+         })
+         .catch((e) => {
+            console.log('Get suggestion products: ', e);
+         });
+   }, []);
    return (
       <div className={cx('wrapper')}>
          {/* <!--- DPT-MENU ---> */}
          <div className={cx('dpt-menu')}>
             <ul className={cx('second-links', 'relative')}>
-               <li className={cx('has-child', 'beauty')}>
+               {/* <li className={cx('has-child', 'beauty')}>
                   <Link to={'/'} className={cx('flex', 'menu-title')}>
                      <div className={cx('icon-large', 'relative', 'flex', 'items-center')}>
                         <FontAwesomeIcon icon={faBattery} />
@@ -70,172 +174,24 @@ function Home() {
                      </li>
                   </ul>
                </li>
-               <li className={cx('has-child', 'electric')}>
-                  <Link to={'/'} className={cx('flex', 'menu-title')}>
-                     <div className={cx('icon-large', 'relative', 'flex', 'items-center')}>
-                        <FontAwesomeIcon icon={faBattery} />
-                     </div>
-                     Electronic
-                     <div className={cx('flex', 'items-center', 'icon-small')}>
-                        <FontAwesomeIcon icon={faCaretRight} />
-                     </div>
-                  </Link>
-                  <ul>
-                     <li>
-                        <Link to={'/'}>Makeup</Link>
-                     </li>
-                     <li>
-                        <Link to={'/'}>Skin Care</Link>
-                     </li>
-                     <li>
-                        <Link to={'/'}>Fragrance</Link>
-                     </li>
-                     <li>
-                        <Link to={'/'}>Foot & Hand Care</Link>
-                     </li>
-                     <li>
-                        <Link to={'/'}>Tools & Accessories</Link>
-                     </li>
-                     <li>
-                        <Link to={'/'}>Shave & Hair Removal</Link>
-                     </li>
-                     <li>
-                        <Link to={'/'}>Personal Care</Link>
-                     </li>
-                     <li>
-                        <Link to={'/'}>Hair Care</Link>
-                     </li>
-                  </ul>
-               </li>
-               <li className={cx('has-child', 'fashion')}>
-                  <Link to={'/'} className={cx('flex', 'menu-title')}>
-                     <div className={cx('icon-large', 'relative', 'flex', 'items-center')}>
-                        <FontAwesomeIcon icon={faBattery} />
-                     </div>
-                     Women's Fashion
-                     <div className={cx('flex', 'items-center', 'icon-small')}>
-                        <FontAwesomeIcon icon={faCaretRight} />
-                     </div>
-                  </Link>
-                  <ul>
-                     <li>
-                        <Link to={'/'}>Makeup</Link>
-                     </li>
-                     <li>
-                        <Link to={'/'}>Skin Care</Link>
-                     </li>
-                     <li>
-                        <Link to={'/'}>Fragrance</Link>
-                     </li>
-                     <li>
-                        <Link to={'/'}>Foot & Hand Care</Link>
-                     </li>
-                     <li>
-                        <Link to={'/'}>Tools & Accessories</Link>
-                     </li>
-                  </ul>
-               </li>
-               <li>
-                  <Link to={'/'} className={cx('flex', 'menu-title')}>
-                     <div className={cx('icon-large', 'relative', 'flex', 'items-center')}>
-                        <FontAwesomeIcon icon={faBattery} />
-                     </div>
-                     Girl's Fashion
-                  </Link>
-               </li>
-               <li>
-                  <Link to={'/'} className={cx('flex', 'menu-title')}>
-                     <div className={cx('icon-large', 'relative', 'flex', 'items-center')}>
-                        <FontAwesomeIcon icon={faBattery} />
-                     </div>
-                     Boy's Fashion
-                  </Link>
-               </li>
-               <li>
-                  <Link to={'/'} className={cx('flex', 'menu-title')}>
-                     <div className={cx('icon-large', 'relative', 'flex', 'items-center')}>
-                        <FontAwesomeIcon icon={faBattery} />
-                     </div>
-                     Health & Household
-                  </Link>
-               </li>
-               <li className={cx('has-child', 'homekit')}>
-                  <Link to={'/'} className={cx('flex', 'menu-title')}>
-                     <div className={cx('icon-large', 'relative', 'flex', 'items-center')}>
-                        <FontAwesomeIcon icon={faBattery} />
-                     </div>
-                     Home & Kitchen
-                     <div className={cx('flex', 'items-center', 'icon-small')}>
-                        <FontAwesomeIcon icon={faCaretRight} />
-                     </div>
-                  </Link>
-                  <div className={cx('mega')}>
-                     <div className={cx('flex', 'flex-col')}>
-                        <div className={cx('row')}>
-                           <h4>
-                              <Link to={'/'}>Kitchen & Dining</Link>
-                           </h4>
-                           <ul>
-                              <li>
-                                 <Link to={'/'}>Kitchen</Link>
-                              </li>
-                              <li>
-                                 <Link to={'/'}>Dining Room</Link>
-                              </li>
-                              <li>
-                                 <Link to={'/'}>Pantry</Link>
-                              </li>
-                              <li>
-                                 <Link to={'/'}>Great Room</Link>
-                              </li>
-                              <li>
-                                 <Link to={'/'}>Breakfast Nook</Link>
-                              </li>
-                           </ul>
-                        </div>
-                        <div className={cx('row')}>
-                           <h4>
-                              <Link to={'/'}>Living</Link>
-                           </h4>
-                           <ul>
-                              <li>
-                                 <Link to={'/'}>Living Room</Link>
-                              </li>
-                              <li>
-                                 <Link to={'/'}>Family Room</Link>
-                              </li>
-                              <li>
-                                 <Link to={'/'}>Sunroom</Link>
-                              </li>
-                           </ul>
-                        </div>
-                     </div>
-                  </div>
-               </li>
-               <li>
-                  <Link to={'/'} className={cx('flex', 'menu-title')}>
-                     <div className={cx('icon-large', 'relative', 'flex', 'items-center')}>
-                        <FontAwesomeIcon icon={faBattery} />
-                     </div>
-                     Pet Supplies
-                  </Link>
-               </li>
-               <li>
-                  <Link to={'/'} className={cx('flex', 'menu-title')}>
-                     <div className={cx('icon-large', 'relative', 'flex', 'items-center')}>
-                        <FontAwesomeIcon icon={faBattery} />
-                     </div>
-                     Sports
-                  </Link>
-               </li>
-               <li>
+                <li>
                   <Link to={'/'} className={cx('flex', 'menu-title')}>
                      <div className={cx('icon-large', 'relative', 'flex', 'items-center')}>
                         <FontAwesomeIcon icon={faBattery} />
                      </div>
                      Best Seller
                   </Link>
-               </li>
+               </li>  */}
+               {categories.slice(0, Math.min(categories.length, 10)).map((category) => (
+                  <li key={category?.id}>
+                     <Link to={`${routesConfig.category}/${category?.id}`} className={cx('flex', 'menu-title')}>
+                        <div className={cx('icon-large', 'relative', 'flex', 'items-center')}>
+                           <FontAwesomeIcon icon={faTag} />
+                        </div>
+                        {category?.name}
+                     </Link>
+                  </li>
+               ))}
             </ul>
          </div>
 
@@ -244,66 +200,28 @@ function Home() {
             <div className={cx('slider-wrapper')}>
                <div className={cx('myslider')}>
                   <Swiper modules={[Pagination]} spaceBetween={50} slidesPerView={1} pagination={{ clickable: true }}>
-                     <SwiperSlide>
-                        <div className={cx('slide')}>
-                           <div className={cx('item')}>
-                              <div className={cx('image', 'object-cover')}>
-                                 <Image src={images.thumbnail} alt="" />
-                              </div>
-                              <div className={cx('text-content', 'flex', 'flex-col')}>
-                                 <h4>Shoes Fashion</h4>
-                                 <h2>
-                                    <span>Come and Get it</span>
-                                    <br />
-                                    <span>Brand New Shoes</span>
-                                 </h2>
-                                 <Link to={'/'} className={cx('primary-button')}>
-                                    Shop Now
-                                 </Link>
-                              </div>
-                           </div>
-                        </div>
-                     </SwiperSlide>
-                     <SwiperSlide>
-                        <div className={cx('slide')}>
-                           <div className={cx('item')}>
-                              <div className={cx('image', 'object-cover')}>
-                                 <Image src={images.thumbnail} alt="" />
-                              </div>
-                              <div className={cx('text-content', 'flex', 'flex-col')}>
-                                 <h4>Shoes Fashion</h4>
-                                 <h2>
-                                    <span>Come and Get it</span>
-                                    <br />
-                                    <span>Brand New Shoes</span>
-                                 </h2>
-                                 <Link to={'/'} className={cx('primary-button')}>
-                                    Shop Now
-                                 </Link>
+                     {sellingCategories.map((item) => (
+                        <SwiperSlide key={item?.id}>
+                           <div className={cx('slide')}>
+                              <div className={cx('item')}>
+                                 <div className={cx('image', 'object-cover')}>
+                                    <Image src={item?.image ? item?.image : images.thumbnail} alt="" />
+                                 </div>
+                                 <div className={cx('text-content', 'flex', 'flex-col')}>
+                                    <h4>{item?.name}</h4>
+                                    <h2>
+                                       <span>{t('home.swipper.category.searchDiscover')}</span>
+                                       <br />
+                                       <span>{t('home.swipper.category.selling')}</span>
+                                    </h2>
+                                    <Link to={`${routesConfig.category}/${item?.id}`} className={cx('primary-button')}>
+                                       {t('home.swipper.category.detail')}
+                                    </Link>
+                                 </div>
                               </div>
                            </div>
-                        </div>
-                     </SwiperSlide>
-                     <SwiperSlide>
-                        <div className={cx('slide')}>
-                           <div className={cx('item')}>
-                              <div className={cx('image', 'object-cover')}>
-                                 <Image src={images.thumbnail} alt="" />
-                              </div>
-                              <div className={cx('text-content', 'flex', 'flex-col')}>
-                                 <h4>Shoes Fashion</h4>
-                                 <h2>
-                                    <span>Come and Get it</span>
-                                    <br />
-                                    <span>Brand New Shoes</span>
-                                 </h2>
-                                 <Link to={'/'} className={cx('primary-button')}>
-                                    Shop Now
-                                 </Link>
-                              </div>
-                           </div>
-                        </div>
-                     </SwiperSlide>
+                        </SwiperSlide>
+                     ))}
                   </Swiper>
                </div>
             </div>
@@ -349,149 +267,29 @@ function Home() {
          <div className={cx('category')}>
             <div>
                <div className={cx('category-item-container', 'has-scrollbar')}>
-                  <div className={cx('category-item')}>
-                     <div className={cx('category-img-box')}>
-                        <Image src={images.brandAsus} alt="dress & frock" width="50" />
-                     </div>
-
-                     <div className={cx('category-content-box')}>
-                        <div className={cx('category-content-flex')}>
-                           <h3 className={cx('category-item-title')}>Dress & frock</h3>
-
-                           <p className={cx('category-item-amount')}>(53)</p>
+                  {categories.map((category) => (
+                     <div className={cx('category-item')} key={category?.id}>
+                        <div className={cx('category-img-box')}>
+                           <Image
+                              src={category?.image ? category?.image : images.brandAsus}
+                              alt="dress & frock"
+                              width="50"
+                           />
                         </div>
 
-                        <Link to={'/'} className={cx('category-btn')}>
-                           Show all
-                        </Link>
-                     </div>
-                  </div>
+                        <div className={cx('category-content-box')}>
+                           <div className={cx('category-content-flex')}>
+                              <h3 className={cx('category-item-title')}>{category?.name}</h3>
 
-                  <div className={cx('category-item')}>
-                     <div className={cx('category-img-box')}>
-                        <Image src={images.brandAsus} alt="winter wear" width="50" />
-                     </div>
+                              <p className={cx('category-item-amount')}>({category?.quantityProduct})</p>
+                           </div>
 
-                     <div className={cx('category-content-box')}>
-                        <div className={cx('category-content-flex')}>
-                           <h3 className={cx('category-item-title')}>Winter wear</h3>
-
-                           <p className={cx('category-item-amount')}>(58)</p>
+                           <Link to={`${routesConfig.category}/${category?.id}`} className={cx('category-btn')}>
+                              {t('home.swipper.category.all')}
+                           </Link>
                         </div>
-
-                        <Link to={'/'} className={cx('category-btn')}>
-                           Show all
-                        </Link>
                      </div>
-                  </div>
-
-                  <div className={cx('category-item')}>
-                     <div className={cx('category-img-box')}>
-                        <Image src={images.brandAsus} alt="glasses & lens" width="50" />
-                     </div>
-
-                     <div className={cx('category-content-box')}>
-                        <div className={cx('category-content-flex')}>
-                           <h3 className={cx('category-item-title')}>Glasses & lens</h3>
-
-                           <p className={cx('category-item-amount')}>(68)</p>
-                        </div>
-
-                        <Link to={'/'} className={cx('category-btn')}>
-                           Show all
-                        </Link>
-                     </div>
-                  </div>
-
-                  <div className={cx('category-item')}>
-                     <div className={cx('category-img-box')}>
-                        <Image src={images.brandAsus} alt="shorts & jeans" width="50" />
-                     </div>
-
-                     <div className={cx('category-content-box')}>
-                        <div className={cx('category-content-flex')}>
-                           <h3 className={cx('category-item-title')}>Shorts & jeans</h3>
-
-                           <p className={cx('category-item-amount')}>(84)</p>
-                        </div>
-
-                        <Link to={'/'} className={cx('category-btn')}>
-                           Show all
-                        </Link>
-                     </div>
-                  </div>
-
-                  <div className={cx('category-item')}>
-                     <div className={cx('category-img-box')}>
-                        <Image src={images.brandAsus} alt="t-shirts" width="50" />
-                     </div>
-
-                     <div className={cx('category-content-box')}>
-                        <div className={cx('category-content-flex')}>
-                           <h3 className={cx('category-item-title')}>T-shirts</h3>
-
-                           <p className={cx('category-item-amount')}>(35)</p>
-                        </div>
-
-                        <Link to={'/'} className={cx('category-btn')}>
-                           Show all
-                        </Link>
-                     </div>
-                  </div>
-
-                  <div className={cx('category-item')}>
-                     <div className={cx('category-img-box')}>
-                        <Image src={images.brandAsus} alt="jacket" width="50" />
-                     </div>
-
-                     <div className={cx('category-content-box')}>
-                        <div className={cx('category-content-flex')}>
-                           <h3 className={cx('category-item-title')}>Jacket</h3>
-
-                           <p className={cx('category-item-amount')}>(16)</p>
-                        </div>
-
-                        <Link to={'/'} className={cx('category-btn')}>
-                           Show all
-                        </Link>
-                     </div>
-                  </div>
-
-                  <div className={cx('category-item')}>
-                     <div className={cx('category-img-box')}>
-                        <Image src={images.brandAsus} alt="watch" width="50" />
-                     </div>
-
-                     <div className={cx('category-content-box')}>
-                        <div className={cx('category-content-flex')}>
-                           <h3 className={cx('category-item-title')}>Watch</h3>
-
-                           <p className={cx('category-item-amount')}>(27)</p>
-                        </div>
-
-                        <Link to={'/'} className={cx('category-btn')}>
-                           Show all
-                        </Link>
-                     </div>
-                  </div>
-
-                  <div className={cx('category-item')}>
-                     <div className={cx('category-img-box')}>
-                        <Image src={images.brandAsus} alt="hat & caps" width="50" />
-                     </div>
-
-                     <div className={cx('category-content-box')}>
-                        <div className={cx('category-content-flex')}>
-                           <h3 className={cx('category-item-title')}>Hat & caps</h3>
-
-                           <p className={cx('category-item-amount')}>(39)</p>
-                        </div>
-
-                        <Link to={'/'} className={cx('category-btn')}>
-                           Show all
-                        </Link>
-                     </div>
-                  </div>
+                  ))}
                </div>
             </div>
          </div>
@@ -503,7 +301,7 @@ function Home() {
                <div className={cx('sidebar', 'has-crollbar')} data-mobie-menu>
                   <div className={cx('sidebar-category')}>
                      <div className={cx('sidebar-top')}>
-                        <h2 className={cx('sidebar-title')}>Category</h2>
+                        <h2 className={cx('sidebar-title')}>{t('home.sidebar.suggestion')}</h2>
 
                         <button className={cx('sidebar-close-btn')} data-mobile-menu-close-btn>
                            <FontAwesomeIcon icon={faRectangleXmark} />
@@ -530,7 +328,7 @@ function Home() {
                                     className={cx('menu-title-img')}
                                  />
 
-                                 <p className={cx('menu-title')}>Clothes</p>
+                                 <p className={cx('menu-title')}>{t('home.sidebar.product.title')}</p>
                               </div>
 
                               <div>
@@ -547,231 +345,53 @@ function Home() {
                               className={cx('sidebar-submenu-category-list', active ? styles.active : '')}
                               data-accordion
                            >
-                              <li className={cx('sidebar-submenu-category')}>
-                                 <Link to={'/'} className={cx('sidebar-submenu-title')}>
-                                    <p className={cx('product-name')}>Shirt</p>
-                                    <data value="300" className={cx('stock')} title="Available Stock">
-                                       300
-                                    </data>
-                                 </Link>
-                              </li>
-
-                              <li className={cx('sidebar-submenu-category')}>
-                                 <Link to={'/'} className={cx('sidebar-submenu-title')}>
-                                    <p className={cx('product-name')}>shorts & jeans</p>
-                                    <data value="60" className={cx('stock')} title="Available Stock">
-                                       60
-                                    </data>
-                                 </Link>
-                              </li>
-
-                              <li className={cx('sidebar-submenu-category')}>
-                                 <Link to={'/'} className={cx('sidebar-submenu-title')}>
-                                    <p className={cx('product-name')}>jacket</p>
-                                    <data value="50" className={cx('stock')} title="Available Stock">
-                                       50
-                                    </data>
-                                 </Link>
-                              </li>
-
-                              <li className={cx('sidebar-submenu-category')}>
-                                 <Link to={'/'} className={cx('sidebar-submenu-title')}>
-                                    <p className={cx('product-name')}>dress & frock</p>
-                                    <data value="87" className={cx('stock')} title="Available Stock">
-                                       87
-                                    </data>
-                                 </Link>
-                              </li>
-                           </ul>
-                        </li>
-
-                        <li
-                           className={cx('sidebar-menu-category')}
-                           onClick={() => {
-                              setAcitve(!active);
-                           }}
-                        >
-                           <button
-                              className={cx('sidebar-accordion-menu', active ? styles.active : '')}
-                              data-accordion-btn
-                           >
-                              <div className={cx('menu-title-flex')}>
-                                 <Image
-                                    src={images.thumbnail}
-                                    alt="clothes"
-                                    width="20"
-                                    height="20"
-                                    className={cx('menu-title-img')}
-                                 />
-
-                                 <p className={cx('menu-title')}>Clothes</p>
-                              </div>
-
-                              <div>
-                                 <FontAwesomeIcon
-                                    icon={faPlus}
-                                    name="add-outline"
-                                    className={cx('add-icon')}
-                                 ></FontAwesomeIcon>
-                                 <FontAwesomeIcon icon={faMinus} className={cx('remove-icon')}></FontAwesomeIcon>
-                              </div>
-                           </button>
-
-                           <ul
-                              className={cx('sidebar-submenu-category-list', active ? styles.active : '')}
-                              data-accordion
-                           >
-                              <li className={cx('sidebar-submenu-category')}>
-                                 <Link to={'/'} className={cx('sidebar-submenu-title')}>
-                                    <p className={cx('product-name')}>Shirt</p>
-                                    <data value="300" className={cx('stock')} title="Available Stock">
-                                       300
-                                    </data>
-                                 </Link>
-                              </li>
-
-                              <li className={cx('sidebar-submenu-category')}>
-                                 <Link to={'/'} className={cx('sidebar-submenu-title')}>
-                                    <p className={cx('product-name')}>shorts & jeans</p>
-                                    <data value="60" className={cx('stock')} title="Available Stock">
-                                       60
-                                    </data>
-                                 </Link>
-                              </li>
-
-                              <li className={cx('sidebar-submenu-category')}>
-                                 <Link to={'/'} className={cx('sidebar-submenu-title')}>
-                                    <p className={cx('product-name')}>jacket</p>
-                                    <data value="50" className={cx('stock')} title="Available Stock">
-                                       50
-                                    </data>
-                                 </Link>
-                              </li>
-
-                              <li className={cx('sidebar-submenu-category')}>
-                                 <Link to={'/'} className={cx('sidebar-submenu-title')}>
-                                    <p className={cx('product-name')}>dress & frock</p>
-                                    <data value="87" className={cx('stock')} title="Available Stock">
-                                       87
-                                    </data>
-                                 </Link>
-                              </li>
+                              {suggestionProducts.map((item) => (
+                                 <li className={cx('sidebar-submenu-category')} key={item.id}>
+                                    <Link to={`product/${item.id}`} className={cx('sidebar-submenu-title')}>
+                                       <p className={cx('product-name')}>{item.name.toLowerCase()}</p>
+                                       <data value="300" className={cx('stock')} title="Available Stock">
+                                          {item.quantity}
+                                       </data>
+                                    </Link>
+                                 </li>
+                              ))}
                            </ul>
                         </li>
                      </ul>
                   </div>
                   <div className={cx('product-showcase')}>
-                     <h3 className={cx('showcase-heading')}>best sellers</h3>
+                     <h3 className={cx('showcase-heading')}>{t('home.sidebar.seller.title')}</h3>
                      <div className={cx('showcase-wrapper')}>
                         <div className={cx('showcase-container')}>
-                           <div className={cx('showcase')}>
-                              <Link to={'/'} className={cx('showcase-img-box')}>
-                                 <Image
-                                    src={images.thumbnail}
-                                    alt=""
-                                    className={cx('showcase-img')}
-                                    width="75"
-                                    height="75"
-                                 />
-                              </Link>
-                              <div className={cx('showcase-content')}>
-                                 <Link to={'/'}>
-                                    <h4 className={cx('showcase-title')}>baby fabric shoes</h4>
+                           {bestSellerProducts.map((item) => (
+                              <div className={cx('showcase')} key={item.id}>
+                                 <Link to={`product/${item.id}`} className={cx('showcase-img-box')}>
+                                    <Image
+                                       src={item.image ? item.image : images.thumbnail}
+                                       alt=""
+                                       className={cx('showcase-img')}
+                                       width="75"
+                                       height="75"
+                                    />
                                  </Link>
-                                 <div className={cx('showcase-rating')}>
-                                    <FontAwesomeIcon icon={faStar} />
-                                    <FontAwesomeIcon icon={faStar} />
-                                    <FontAwesomeIcon icon={faStar} />
-                                    <FontAwesomeIcon icon={faStar} />
-                                    <FontAwesomeIcon icon={faStar} />
-                                 </div>
-                                 <div className={cx('price-box')}>
-                                    <del>$5.00</del>
-                                    <p className={cx('price')}>$4.00</p>
+                                 <div className={cx('showcase-content')}>
+                                    <Link to={`product/${item.id}`}>
+                                       <h4 className={cx('showcase-title')}>{item.name}</h4>
+                                    </Link>
+                                    <div className={cx('showcase-rating')}>
+                                       <FontAwesomeIcon icon={faStar} />
+                                       <FontAwesomeIcon icon={faStar} />
+                                       <FontAwesomeIcon icon={faStar} />
+                                       <FontAwesomeIcon icon={faStar} />
+                                       <FontAwesomeIcon icon={faStar} />
+                                    </div>
+                                    <div className={cx('price-box')}>
+                                       <del>$5.00</del>
+                                       <p className={cx('price')}>{formatCurrency('vi-VN', item.unitPrice)}</p>
+                                    </div>
                                  </div>
                               </div>
-                           </div>
-                           <div className={cx('showcase')}>
-                              <Link to={'/'} className={cx('showcase-img-box')}>
-                                 <Image
-                                    src={images.thumbnail}
-                                    alt=""
-                                    className={cx('showcase-img')}
-                                    width="75"
-                                    height="75"
-                                 />
-                              </Link>
-                              <div className={cx('showcase-content')}>
-                                 <Link to={'/'}>
-                                    <h4 className={cx('showcase-title')}>baby fabric shoes</h4>
-                                 </Link>
-                                 <div className={cx('showcase-rating')}>
-                                    <FontAwesomeIcon icon={faStar} />
-                                    <FontAwesomeIcon icon={faStar} />
-                                    <FontAwesomeIcon icon={faStar} />
-                                    <FontAwesomeIcon icon={faStar} />
-                                    <FontAwesomeIcon icon={faStar} />
-                                 </div>
-                                 <div className={cx('price-box')}>
-                                    <del>$5.00</del>
-                                    <p className={cx('price')}>$4.00</p>
-                                 </div>
-                              </div>
-                           </div>
-                           <div className={cx('showcase')}>
-                              <Link to={'/'} className={cx('showcase-img-box')}>
-                                 <Image
-                                    src={images.thumbnail}
-                                    alt=""
-                                    className={cx('showcase-img')}
-                                    width="75"
-                                    height="75"
-                                 />
-                              </Link>
-                              <div className={cx('showcase-content')}>
-                                 <Link to={'/'}>
-                                    <h4 className={cx('showcase-title')}>baby fabric shoes</h4>
-                                 </Link>
-                                 <div className={cx('showcase-rating')}>
-                                    <FontAwesomeIcon icon={faStar} />
-                                    <FontAwesomeIcon icon={faStar} />
-                                    <FontAwesomeIcon icon={faStar} />
-                                    <FontAwesomeIcon icon={faStar} />
-                                    <FontAwesomeIcon icon={faStar} />
-                                 </div>
-                                 <div className={cx('price-box')}>
-                                    <del>$5.00</del>
-                                    <p className={cx('price')}>$4.00</p>
-                                 </div>
-                              </div>
-                           </div>
-                           <div className={cx('showcase')}>
-                              <Link to={'/'} className={cx('showcase-img-box')}>
-                                 <Image
-                                    src={images.thumbnail}
-                                    alt=""
-                                    className={cx('showcase-img')}
-                                    width="75"
-                                    height="75"
-                                 />
-                              </Link>
-                              <div className={cx('showcase-content')}>
-                                 <Link to={'/'}>
-                                    <h4 className={cx('showcase-title')}>baby fabric shoes</h4>
-                                 </Link>
-                                 <div className={cx('showcase-rating')}>
-                                    <FontAwesomeIcon icon={faStar} />
-                                    <FontAwesomeIcon icon={faStar} />
-                                    <FontAwesomeIcon icon={faStar} />
-                                    <FontAwesomeIcon icon={faStar} />
-                                    <FontAwesomeIcon icon={faStar} />
-                                 </div>
-                                 <div className={cx('price-box')}>
-                                    <del>$5.00</del>
-                                    <p className={cx('price')}>$4.00</p>
-                                 </div>
-                              </div>
-                           </div>
+                           ))}
                         </div>
                      </div>
                   </div>
@@ -782,177 +402,73 @@ function Home() {
                         PRODUCT FEATURED
                   */}
                   <div className={cx('product-featured')}>
-                     <h2 className={cx('title')}>Deal of the day</h2>
+                     <h2 className={cx('title')}>{t('home.deal.product.title')}</h2>
 
                      <div className={cx('showcase-wrapper', 'has-scrollbar')}>
-                        <div className={cx('showcase-container')}>
-                           <div className={cx('showcase')}>
-                              <div className={cx('showcase-banner')}>
-                                 <Image
-                                    src={images.thumbnail}
-                                    alt="shampoo, conditioner & facewash packs"
-                                    className={cx('showcase-img')}
-                                 />
-                              </div>
-
-                              <div className={cx('showcase-content')}>
-                                 <div className={cx('showcase-rating')}>
-                                    <FontAwesomeIcon icon={faStar} />
-                                    <FontAwesomeIcon icon={faStar} />
-                                    <FontAwesomeIcon icon={faStar} />
-                                    <FontAwesomeIcon icon={faStar} />
-                                    <FontAwesomeIcon icon={faStarHalfStroke} />
+                        {dealTodayProducts.map((product) => (
+                           <div className={cx('showcase-container')} key={product?.id}>
+                              <div className={cx('showcase')}>
+                                 <div className={cx('showcase-banner')}>
+                                    <Image
+                                       src={images.thumbnail}
+                                       alt="shampoo, conditioner & facewash packs"
+                                       className={cx('showcase-img')}
+                                    />
                                  </div>
 
-                                 <Link to={'/'}>
-                                    <h3 className={cx('showcase-title')}>shampoo, conditioner & facewash packs</h3>
-                                 </Link>
-
-                                 <p className={cx('showcase-desc')}>
-                                    Lorem ipsum dolor sit amet consectetur Lorem ipsum dolor dolor sit amet consectetur
-                                    Lorem ipsum dolor
-                                 </p>
-
-                                 <div className={cx('price-box')}>
-                                    <p className={cx('price')}>$150.00</p>
-
-                                    <del>$200.00</del>
-                                 </div>
-
-                                 <button className={cx('add-cart-btn')}>add to cart</button>
-
-                                 <div className={cx('showcase-status')}>
-                                    <div className={cx('wrapper')}>
-                                       <p>
-                                          already sold: <b>20</b>
-                                       </p>
-
-                                       <p>
-                                          available: <b>40</b>
-                                       </p>
+                                 <div className={cx('showcase-content')}>
+                                    <div className={cx('showcase-rating')}>
+                                       <FontAwesomeIcon icon={faStar} />
+                                       <FontAwesomeIcon icon={faStar} />
+                                       <FontAwesomeIcon icon={faStar} />
+                                       <FontAwesomeIcon icon={faStar} />
+                                       <FontAwesomeIcon icon={faStarHalfStroke} />
                                     </div>
 
-                                    <div className={cx('showcase-status-bar')}></div>
-                                 </div>
+                                    <Link to={`/product/${product?.id}`}>
+                                       <h3 className={cx('showcase-title')}>{product?.name}</h3>
+                                    </Link>
 
-                                 <div className={cx('countdown-box')}>
-                                    <p className={cx('countdown-desc')}>Hurry Up! Offer ends in:</p>
+                                    <p className={cx('showcase-desc')}>{product?.description}</p>
 
-                                    <div className={cx('countdown')}>
-                                       <div className={cx('countdown-content')}>
-                                          <p className={cx('display-number')}>360</p>
+                                    <div className={cx('price-box')}>
+                                       <p className={cx('price')}>{formatCurrency('vi-VN', product?.unitPrice)}</p>
 
-                                          <p className={cx('display-text')}>Days</p>
+                                       <del>$200.00</del>
+                                    </div>
+
+                                    <button className={cx('add-cart-btn')}>{t('cart.addCart')}</button>
+
+                                    <div className={cx('showcase-status')}>
+                                       <div className={cx('wrapper')}>
+                                          <p>
+                                             {t('home.deal.product.sold')}: <b>{product?.totalSoldProduct}</b>
+                                          </p>
+
+                                          <p>
+                                             {t('home.deal.product.stock')}: <b>{product?.quantity}</b>
+                                          </p>
                                        </div>
 
-                                       <div className={cx('countdown-content')}>
-                                          <p className={cx('display-number')}>24</p>
-                                          <p className={cx('display-text')}>Hours</p>
-                                       </div>
-
-                                       <div className={cx('countdown-content')}>
-                                          <p className={cx('display-number')}>59</p>
-                                          <p className={cx('display-text')}>Min</p>
-                                       </div>
-
-                                       <div className={cx('countdown-content')}>
-                                          <p className={cx('display-number')}>00</p>
-                                          <p className={cx('display-text')}>Sec</p>
-                                       </div>
+                                       <div
+                                          className={cx('showcase-status-bar')}
+                                          style={{ '--stock-process': `${calcStockProcess(product)}%` }}
+                                       ></div>
                                     </div>
                                  </div>
                               </div>
                            </div>
-                        </div>
-                        <div className={cx('showcase-container')}>
-                           <div className={cx('showcase')}>
-                              <div className={cx('showcase-banner')}>
-                                 <Image
-                                    src={images.thumbnail}
-                                    alt="shampoo, conditioner & facewash packs"
-                                    className={cx('showcase-img')}
-                                 />
-                              </div>
-
-                              <div className={cx('showcase-content')}>
-                                 <div className={cx('showcase-rating')}>
-                                    <FontAwesomeIcon icon={faStar} />
-                                    <FontAwesomeIcon icon={faStar} />
-                                    <FontAwesomeIcon icon={faStar} />
-                                    <FontAwesomeIcon icon={faStar} />
-                                    <FontAwesomeIcon icon={faStarHalfStroke} />
-                                 </div>
-
-                                 <Link to={'/'}>
-                                    <h3 className={cx('showcase-title')}>shampoo, conditioner & facewash packs</h3>
-                                 </Link>
-
-                                 <p className={cx('showcase-desc')}>
-                                    Lorem ipsum dolor sit amet consectetur Lorem ipsum dolor dolor sit amet consectetur
-                                    Lorem ipsum dolor
-                                 </p>
-
-                                 <div className={cx('price-box')}>
-                                    <p className={cx('price')}>$150.00</p>
-
-                                    <del>$200.00</del>
-                                 </div>
-
-                                 <button className={cx('add-cart-btn')}>add to cart</button>
-
-                                 <div className={cx('showcase-status')}>
-                                    <div className={cx('wrapper')}>
-                                       <p>
-                                          already sold: <b>20</b>
-                                       </p>
-
-                                       <p>
-                                          available: <b>40</b>
-                                       </p>
-                                    </div>
-
-                                    <div className={cx('showcase-status-bar')}></div>
-                                 </div>
-
-                                 <div className={cx('countdown-box')}>
-                                    <p className={cx('countdown-desc')}>Hurry Up! Offer ends in:</p>
-
-                                    <div className={cx('countdown')}>
-                                       <div className={cx('countdown-content')}>
-                                          <p className={cx('display-number')}>360</p>
-
-                                          <p className={cx('display-text')}>Days</p>
-                                       </div>
-
-                                       <div className={cx('countdown-content')}>
-                                          <p className={cx('display-number')}>24</p>
-                                          <p className={cx('display-text')}>Hours</p>
-                                       </div>
-
-                                       <div className={cx('countdown-content')}>
-                                          <p className={cx('display-number')}>59</p>
-                                          <p className={cx('display-text')}>Min</p>
-                                       </div>
-
-                                       <div className={cx('countdown-content')}>
-                                          <p className={cx('display-number')}>00</p>
-                                          <p className={cx('display-text')}>Sec</p>
-                                       </div>
-                                    </div>
-                                 </div>
-                              </div>
-                           </div>
-                        </div>
+                        ))}
                      </div>
                   </div>
                   {/* 
                         PRODUCT GRID
                   */}
                   <div className={cx('product-main')}>
-                     <h2 className={cx('title')}>New Products</h2>
+                     <h2 className={cx('title')}>{t('home.content.product.new')}</h2>
                      <div className={cx('product-grid')}>
-                        {['', '', '', '', '', '', '', ''].map((element, index) => {
-                           return <ProductCard key={index} />;
+                        {newProducts.map((item) => {
+                           return <ProductCard key={item.id} data={item} />;
                         })}
                      </div>
                   </div>

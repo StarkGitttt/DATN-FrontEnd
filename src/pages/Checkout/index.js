@@ -1,272 +1,282 @@
-import classNames from 'classnames/bind';
+import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import classNames from 'classnames/bind';
+
+import { plusOrMinusItemAmountCart, resetItemAmountCart, removeCart } from '~/features/user/userSlice';
 import styles from './Checkout.module.scss';
 import images from '~/assets/images';
 import Image from '~/components/reuse/Image';
-import ProgressCheckout from '~/components/reuse/ProgressCheckout';
+import { formatCurrency } from '~/utils';
+import { toast } from 'react-toastify';
+import { faCartShopping } from '@fortawesome/free-solid-svg-icons';
 const cx = classNames.bind(styles);
 
 function Checkout() {
+   const { t } = useTranslation();
+
+   const carts = useSelector((state) => state.user.userCarts);
+   const dispatch = useDispatch();
+   const calcTotalPriceCart = (accumulator, currentValue) => {
+      return accumulator + currentValue.amountOrder * currentValue.unitPrice;
+   };
+
+   const calcTotalQuantityItems = (accumulator, currentValue) => {
+      return accumulator + currentValue.amountOrder;
+   };
+
+   // Handle add amount item
+   const handlePlushOrMinusAmountItem = (amount, cart) => {
+      let quanity = Number(amount) + cart.amountOrder;
+      let quantityStock = Number(cart.quantity);
+      if (quanity > quantityStock) {
+         toast.warning(t('cart.message.add.warningMaxQty', { amount: quantityStock }));
+         return;
+      }
+      if (Number(cart.amountOrder) + Number(amount) <= 0) {
+         toast.warning(t('cart.message.add.warningMinQty', { amount: 1 }));
+         return;
+      }
+      dispatch(plusOrMinusItemAmountCart({ id: cart.id, amountOrder: Number(amount) }));
+   };
+   const handleChanAmountItemFromInput = (amount, cart) => {
+      console.log('Amount change', amount);
+      if (amount <= 0 || !amount) {
+         return;
+      }
+      dispatch(resetItemAmountCart({ id: cart.id, amountOrder: Number(amount) }));
+   };
+   const handleBlurAmountItemFromInput = (amount, cart) => {
+      let quantity = Number(cart.quantity);
+      if (Number(amount) > quantity) {
+         dispatch(resetItemAmountCart({ id: cart.id, amountOrder: quantity }));
+      }
+      if (Number(amount) < 0 || !amount) {
+         dispatch(resetItemAmountCart({ id: cart.id, amountOrder: 1 }));
+      }
+   };
+   // Handle remove item into carts
+   const handleRemoveItemIntoCarts = (id) => {
+      dispatch(removeCart(id));
+   };
    return (
       <div className={cx('wrapper')}>
-         <div className={cx('page-main')}>
-            <div className={cx('page-title-wrapper')}>
-               <h1 className={cx('page-title')}>
-                  <span className={cx('base')}>Giỏ hàng</span>
-               </h1>
-            </div>
-            {/* <div className={cx('columns')}>
-               <div className={cx('column', 'main')}>
-                  <div className={cx('cart-container')}>
-                     <form className={cx('form', 'form-cart')}>
-                        <div className={cx('cart', 'table-wrapper')}>
-                           <div className={cx('cart-count')}>5 sản phẩm </div>
-                        </div>
-                     </form>
-                  </div>
+         {carts.length > 0 ? (
+            <div className={cx('page-main')}>
+               <div className={cx('page-title-wrapper')}>
+                  <h1 className={cx('page-title')}>
+                     <span className={cx('base')}>{t('checkout.cart')}</span>
+                  </h1>
                </div>
-            </div> */}
-            <div className={cx('page-content-wrapper', 'flex', 'flex-wrap')}>
-               <div className={cx('cart-list', 'pr-[60px]', 'flex', 'flex-col')}>
-                  <div className={cx('cart-count')}>2 Product</div>
-                  <div className={cx('cart-item')}>
-                     <div className={cx('item-info')}>
-                        {/* ITEM 1 */}
-                        <div className={cx('item')}>
-                           <div className={cx('item__content')}>
-                              <Link to={'/'} className={cx('product-item-photo')}>
-                                 <Image src={images.thumbnail} alt="" className={cx('product-image-photo')} />
-                              </Link>
-                              <div className={cx('product-item-details')}>
-                                 <strong className={cx('product-item-name')}>
-                                    <Link to={'/'}>Áo Thun Nam Tay Ngắn Trơn Form Fitted - 10S21TSH019CR2</Link>
-                                 </strong>
-                                 <div className={cx('item-options')}>
-                                    <div className={cx('item-option')}>COLOR: LIGHT GREEN</div>
-                                    <div className={cx('item-option')}>SIZE: S</div>
-                                 </div>
-                                 <div className={cx('item-qty')}>
-                                    <div className={cx('control-qty')}>
-                                       <Link to="#" className={cx('btn-number', 'minus')}></Link>
-                                       <input onChange={() => {}} className={cx('input-text-qty')} value={1} />
-                                       <Link to="#" className={cx('btn-number', 'plus')}></Link>
-                                    </div>
-                                 </div>
-                                 <div className={cx('item-price')}>
-                                    <span className={cx('price')}>579.000&nbsp;₫</span>
-                                 </div>
-                                 <div className={cx('item-actions')}>
-                                    <Link to="#" className={cx('action-delete')}></Link>
-                                 </div>
-                              </div>
-                           </div>
-                        </div>
-                        {/* ITEM 2 */}
-                        <div className={cx('item')}>
-                           <div className={cx('item__content')}>
-                              <Link to={'/'} className={cx('product-item-photo')}>
-                                 <Image src={images.thumbnail} alt="" className={cx('product-image-photo')} />
-                              </Link>
-                              <div className={cx('product-item-details')}>
-                                 <strong className={cx('product-item-name')}>
-                                    <Link to={'/'}>Áo Thun Nam Tay Ngắn Trơn Form Fitted - 10S21TSH019CR2</Link>
-                                 </strong>
-                                 <div className={cx('item-options')}>
-                                    <div className={cx('item-option')}>COLOR: LIGHT GREEN</div>
-                                    <div className={cx('item-option')}>SIZE: S</div>
-                                 </div>
-                                 <div className={cx('item-qty')}>
-                                    <div className={cx('control-qty')}>
-                                       <Link to="#" className={cx('btn-number', 'minus')}></Link>
-                                       <input onChange={() => {}} className={cx('input-text-qty')} value={1} />
-                                       <Link to="#" className={cx('btn-number', 'plus')}></Link>
-                                    </div>
-                                 </div>
-                                 <div className={cx('item-price')}>
-                                    <span className={cx('price')}>579.000&nbsp;₫</span>
-                                 </div>
-                                 <div className={cx('item-actions')}>
-                                    <Link to="#" className={cx('action-delete')}></Link>
-                                 </div>
-                              </div>
-                           </div>
-                        </div>
-                        {/* ITEM 3 */}
-                        <div className={cx('item')}>
-                           <div className={cx('item__content')}>
-                              <Link to={'/'} className={cx('product-item-photo')}>
-                                 <Image src={images.thumbnail} alt="" className={cx('product-image-photo')} />
-                              </Link>
-                              <div className={cx('product-item-details')}>
-                                 <strong className={cx('product-item-name')}>
-                                    <Link to={'/'}>Áo Thun Nam Tay Ngắn Trơn Form Fitted - 10S21TSH019CR2</Link>
-                                 </strong>
-                                 <div className={cx('item-options')}>
-                                    <div className={cx('item-option')}>COLOR: LIGHT GREEN</div>
-                                    <div className={cx('item-option')}>SIZE: S</div>
-                                 </div>
-                                 <div className={cx('item-qty')}>
-                                    <div className={cx('control-qty')}>
-                                       <Link to="#" className={cx('btn-number', 'minus')}></Link>
-                                       <input onChange={() => {}} className={cx('input-text-qty')} value={1} />
-                                       <Link to="#" className={cx('btn-number', 'plus')}></Link>
-                                    </div>
-                                 </div>
-                                 <div className={cx('item-price')}>
-                                    <span className={cx('price')}>579.000&nbsp;₫</span>
-                                 </div>
-                                 <div className={cx('item-actions')}>
-                                    <Link to="#" className={cx('action-delete')}></Link>
-                                 </div>
-                              </div>
-                           </div>
-                        </div>
-                        {/* ITEM 4 */}
-                        <div className={cx('item')}>
-                           <div className={cx('item__content')}>
-                              <Link to={'/'} className={cx('product-item-photo')}>
-                                 <Image src={images.thumbnail} alt="" className={cx('product-image-photo')} />
-                              </Link>
-                              <div className={cx('product-item-details')}>
-                                 <strong className={cx('product-item-name')}>
-                                    <Link to={'/'}>Áo Thun Nam Tay Ngắn Trơn Form Fitted - 10S21TSH019CR2</Link>
-                                 </strong>
-                                 <div className={cx('item-options')}>
-                                    <div className={cx('item-option')}>COLOR: LIGHT GREEN</div>
-                                    <div className={cx('item-option')}>SIZE: S</div>
-                                 </div>
-                                 <div className={cx('item-qty')}>
-                                    <div className={cx('control-qty')}>
-                                       <Link to="#" className={cx('btn-number', 'minus')}></Link>
-                                       <input onChange={() => {}} className={cx('input-text-qty')} value={1} />
-                                       <Link to="#" className={cx('btn-number', 'plus')}></Link>
-                                    </div>
-                                 </div>
-                                 <div className={cx('item-price')}>
-                                    <span className={cx('price')}>579.000&nbsp;₫</span>
-                                 </div>
-                                 <div className={cx('item-actions')}>
-                                    <Link to="#" className={cx('action-delete')}></Link>
-                                 </div>
-                              </div>
-                           </div>
-                        </div>
-                     </div>
+               {/* <div className={cx('columns')}>
+         <div className={cx('column', 'main')}>
+            <div className={cx('cart-container')}>
+               <form className={cx('form', 'form-cart')}>
+                  <div className={cx('cart', 'table-wrapper')}>
+                     <div className={cx('cart-count')}>5 sản phẩm </div>
                   </div>
-               </div>
-               <div className={cx('sidebar-main')}>
-                  <div className={cx('cart-summary-coupon')}>
-                     {/* BLOCK DISCOUNT 1 */}
-                     <div className={cx('block-discount')}>
-                        <div className={cx('content')}>
-                           <form action="">
-                              <div className={cx('block-discount-title')}>
-                                 <strong>NHẬP MÃ COUPON ƯU ĐÃI</strong>
-                              </div>
-                              <div className={cx('note')}>
-                                 <span>Chỉ sử dụng 1 mã cho 1 đơn hàng</span>
-                              </div>
-                              <div className={cx('coupon-input')}>
-                                 <div className={cx('field')}>
-                                    <div className={cx('control')}>
-                                       <input
-                                          type="text"
-                                          className={cx('input-text')}
-                                          value=""
-                                          placeholder="Nhập mã giảm giá"
-                                       />
-                                       <button className={cx('control-action')} value="Áp dụng" type="button">
-                                          <span>Áp dụng</span>
-                                       </button>
-                                    </div>
-                                 </div>
-                              </div>
-                           </form>
-                        </div>
-                     </div>
-                     {/* BLOCK DISCOUNT 2 */}
-                     <div className={cx('block-discount')}>
-                        <div className={cx('content')}>
-                           <form action="">
-                              <div className={cx('block-discount-title')}>
-                                 <strong>NHẬP SỐ ĐIỆN THOẠI VIP</strong>
-                                 <span> (Nếu có)</span>
-                              </div>
-                              <div className={cx('note', 'customer-vip')}>
-                                 <Link to={'#'}>Chính sách khách hàng VIP</Link>
-                              </div>
-                              <div className={cx('coupon-input')}>
-                                 <div className={cx('field')}>
-                                    <div className={cx('control')}>
-                                       <input
-                                          type="text"
-                                          className={cx('input-text')}
-                                          value=""
-                                          placeholder="Nhập số điện thoại"
-                                       />
-                                       <button className={cx('control-action')} value="Áp dụng" type="button">
-                                          <span>Áp dụng</span>
-                                       </button>
-                                    </div>
-                                 </div>
-                              </div>
-                           </form>
-                        </div>
-                     </div>
-                  </div>
-                  <div className={cx('cart-summary')}>
-                     <strong className={cx('title')}>Tạm tính</strong>
-                     <div className={cx('cart-totals')}>
-                        <div className={cx('table-wrapper')}>
-                           <table className={cx('table-totals')}>
-                              <tbody>
-                                 <tr className={cx('totals', 'qty')}>
-                                    <th className={cx('mark')}>
-                                       <span>Số lượng</span>
-                                    </th>
-                                    <td className={cx('amount')}>
-                                       <span className={cx('price')}>1</span>
-                                    </td>
-                                 </tr>
-                                 <tr className={cx('totals', 'sub')}>
-                                    <th className={cx('mark')}>
-                                       <span>Tạm tính</span>
-                                    </th>
-                                    <td className={cx('amount')}>
-                                       <span className={cx('price')}>579.000&nbsp;₫</span>
-                                    </td>
-                                 </tr>
-                                 <tr className={cx('totals', 'shipping')}>
-                                    <th className={cx('mark', 'pb-totals')}>
-                                       <span>Phí vận chuyển</span>
-                                    </th>
-                                    <td className={cx('amount', 'pb-totals')}>
-                                       <span className={cx('price')}>0&nbsp;₫</span>
-                                    </td>
-                                 </tr>
-                                 <tr className={cx('totals', 'grand')}>
-                                    <th className={cx('mark', 'pt-totals')}>
-                                       <span>Tổng số</span>
-                                    </th>
-                                    <td className={cx('amount', 'pt-totals')}>
-                                       <strong>
-                                          <span className={cx('price', 'text-3xl')}>579.000&nbsp;₫</span>
-                                       </strong>
-                                    </td>
-                                 </tr>
-                              </tbody>
-                           </table>
-                        </div>
-                     </div>
-                     <button className={cx('cart-btn-checkout')}>
-                        <span>Thanh toán</span>
-                        <span>579.000&nbsp;₫</span>
-                     </button>
-                  </div>
-               </div>
+               </form>
             </div>
          </div>
-         <ProgressCheckout />
+      </div> */}
+               <div className={cx('page-content-wrapper', 'flex', 'flex-wrap')}>
+                  <div className={cx('cart-list', 'pr-[60px]', 'flex', 'flex-col')}>
+                     <div className={cx('cart-count')}>
+                        {carts.length === 1
+                           ? t('checkout.product', { amount: carts.length })
+                           : t('checkout.products', { amount: carts.length })}
+                     </div>
+                     <div className={cx('cart-item')}>
+                        <div className={cx('item-info')}>
+                           {carts.map((item) => (
+                              <div className={cx('item')} key={item?.id}>
+                                 <div className={cx('item__content')}>
+                                    <Link to={`/product/${item.id}`} className={cx('product-item-photo')}>
+                                       <Image src={images.thumbnail} alt="" className={cx('product-image-photo')} />
+                                    </Link>
+                                    <div className={cx('product-item-details')}>
+                                       <strong className={cx('product-item-name')}>
+                                          <Link to={`/product/${item.id}`}>{item?.name}</Link>
+                                       </strong>
+                                       <div className={cx('item-options')}>
+                                          <div className={cx('item-option')}>
+                                             {t('checkout.description')}: {item?.description}
+                                          </div>
+                                          {/* <div className={cx('item-option')}>SIZE: S</div> */}
+                                       </div>
+                                       <div className={cx('item-qty')}>
+                                          <div className={cx('control-qty')}>
+                                             <Link
+                                                to="#"
+                                                className={cx('btn-number', 'minus')}
+                                                onClick={() => {
+                                                   handlePlushOrMinusAmountItem(-1, item);
+                                                }}
+                                             ></Link>
+                                             <input
+                                                type="number"
+                                                onChange={(e) => handleChanAmountItemFromInput(e.target.value, item)}
+                                                onBlur={(e) => handleBlurAmountItemFromInput(e.target.value, item)}
+                                                className={cx('input-text-qty')}
+                                                value={item?.amountOrder}
+                                                max={item?.quantity}
+                                             />
+                                             <Link
+                                                to="#"
+                                                className={cx('btn-number', 'plus')}
+                                                onClick={() => {
+                                                   handlePlushOrMinusAmountItem(1, item);
+                                                }}
+                                             ></Link>
+                                          </div>
+                                       </div>
+                                       <div className={cx('item-price')}>
+                                          <span className={cx('price')}>
+                                             {formatCurrency('vi-VN', item?.unitPrice * item?.amountOrder)}
+                                          </span>
+                                       </div>
+                                       <div className={cx('item-actions')}>
+                                          <Link
+                                             to="#"
+                                             className={cx('action-delete')}
+                                             onClick={() => {
+                                                console.log('abc');
+                                                handleRemoveItemIntoCarts(item?.id);
+                                             }}
+                                          ></Link>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                           ))}
+                        </div>
+                     </div>
+                  </div>
+                  <div className={cx('sidebar-main')}>
+                     <div className={cx('cart-summary-coupon')}>
+                        {/* BLOCK DISCOUNT 1 */}
+                        <div className={cx('block-discount')}>
+                           <div className={cx('content')}>
+                              <form action="">
+                                 <div className={cx('block-discount-title')}>
+                                    <strong>{t('checkout.codePromotion.coupon.title')}</strong>
+                                 </div>
+                                 <div className={cx('note')}>
+                                    <span>{t('checkout.codePromotion.coupon.condition')}</span>
+                                 </div>
+                                 <div className={cx('coupon-input')}>
+                                    <div className={cx('field')}>
+                                       <div className={cx('control')}>
+                                          <input
+                                             onChange={() => {}}
+                                             type="text"
+                                             className={cx('input-text')}
+                                             value=""
+                                             placeholder={t('checkout.codePromotion.coupon.placeholder')}
+                                          />
+                                          <button className={cx('control-action')} value="Áp dụng" type="button">
+                                             <span>{t('checkout.codePromotion.coupon.button')}</span>
+                                          </button>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </form>
+                           </div>
+                        </div>
+                        {/* BLOCK DISCOUNT 2 */}
+                        <div className={cx('block-discount')}>
+                           <div className={cx('content')}>
+                              <form action="">
+                                 <div className={cx('block-discount-title')}>
+                                    <strong>{t('checkout.codePromotion.phone.title')}</strong>
+                                    <span>({t('checkout.codePromotion.phone.optional')})</span>
+                                 </div>
+                                 <div className={cx('note', 'customer-vip')}>
+                                    <Link to={'#'}>{t('checkout.codePromotion.phone.condition')}</Link>
+                                 </div>
+                                 <div className={cx('coupon-input')}>
+                                    <div className={cx('field')}>
+                                       <div className={cx('control')}>
+                                          <input
+                                             onChange={() => {}}
+                                             type="text"
+                                             className={cx('input-text')}
+                                             value=""
+                                             placeholder={t('checkout.codePromotion.phone.placeholder')}
+                                          />
+                                          <button className={cx('control-action')} value="Áp dụng" type="button">
+                                             <span>{t('checkout.codePromotion.phone.button')}</span>
+                                          </button>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </form>
+                           </div>
+                        </div>
+                     </div>
+                     <div className={cx('cart-summary')}>
+                        <strong className={cx('title')}>{t('checkout.subTotal.title')}</strong>
+                        <div className={cx('cart-totals')}>
+                           <div className={cx('table-wrapper')}>
+                              <table className={cx('table-totals')}>
+                                 <tbody>
+                                    <tr className={cx('totals', 'qty')}>
+                                       <th className={cx('mark')}>
+                                          <span>{t('checkout.subTotal.quantity')}</span>
+                                       </th>
+                                       <td className={cx('amount')}>
+                                          <span className={cx('price')}>{carts.reduce(calcTotalQuantityItems, 0)}</span>
+                                       </td>
+                                    </tr>
+                                    <tr className={cx('totals', 'sub')}>
+                                       <th className={cx('mark')}>
+                                          <span>{t('checkout.subTotal.title')}</span>
+                                       </th>
+                                       <td className={cx('amount')}>
+                                          <span className={cx('price')}>
+                                             {formatCurrency('vi-VN', carts.reduce(calcTotalPriceCart, 0))}
+                                          </span>
+                                       </td>
+                                    </tr>
+                                    <tr className={cx('totals', 'shipping')}>
+                                       <th className={cx('mark', 'pb-totals')}>
+                                          <span>{t('checkout.subTotal.transportFee')}</span>
+                                       </th>
+                                       <td className={cx('amount', 'pb-totals')}>
+                                          <span className={cx('price')}>0&nbsp;₫</span>
+                                       </td>
+                                    </tr>
+                                    <tr className={cx('totals', 'grand')}>
+                                       <th className={cx('mark', 'pt-totals')}>
+                                          <span>{t('checkout.subTotal.total')}</span>
+                                       </th>
+                                       <td className={cx('amount', 'pt-totals')}>
+                                          <strong>
+                                             <span className={cx('price', 'text-3xl')}>
+                                                {formatCurrency('vi-VN', carts.reduce(calcTotalPriceCart, 0))}
+                                             </span>
+                                          </strong>
+                                       </td>
+                                    </tr>
+                                 </tbody>
+                              </table>
+                           </div>
+                        </div>
+                        <button className={cx('cart-btn-checkout')}>
+                           <span>{t('checkout.subTotal.payment')}</span>
+                           <span>{formatCurrency('vi-VN', carts.reduce(calcTotalPriceCart, 0))}</span>
+                        </button>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         ) : (
+            <div className={cx('products-empty')}>
+               <h3>{t('checkout.empty')}</h3>
+               <FontAwesomeIcon icon={faCartShopping} />
+            </div>
+         )}
       </div>
    );
 }

@@ -1,25 +1,97 @@
-import { useState } from 'react';
-import classNames from 'classnames/bind';
+import { useDispatch, useSelector } from 'react-redux';
+import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import { Select, Space } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import styles from './Header.module.scss';
 import {
-   faAngleDown,
    faArrowRight,
    faBarsStaggered,
+   faCaretDown,
+   faCaretUp,
    faCartShopping,
-   faHeart,
-   faSearch,
+   faFlagUsa,
    faXmark,
 } from '@fortawesome/free-solid-svg-icons';
+import classNames from 'classnames/bind';
+
+import { BrandAPI, CategoryAPI, ProductAPI } from '~/api/EcommerceApi';
+import constants_local from '~/constants';
+import routesConfig from '~/config/routes';
+import styles from './Header.module.scss';
 import Image from '~/components/reuse/Image';
 import images from '~/assets/images';
 import LoginForm from '~/components/reuse/LoginForm';
+import Search from '~/components/reuse/Search';
+import { removeUserInfo, removeCart } from '~/features/user/userSlice';
+import { formatCurrency } from '~/utils';
 
 const cx = classNames.bind(styles);
+
 function Header() {
+   const { t, i18n } = useTranslation();
+   const handleChange = (value) => {
+      i18n.changeLanguage(value);
+   };
+   const userInfo = useSelector((state) => state.user.userInfo);
+   const carts = useSelector((state) => state.user.userCarts);
+   const dispatch = useDispatch();
+
+   const [showManageAccount, setShowManageAccount] = useState(false);
+   const [showManageOrder, setShowManageOrder] = useState(false);
    const [showCartMini, setShowCartMini] = useState(false);
    const [showLoginForm, setShowLoginForm] = useState(false);
+   const [showMega, setShowMega] = useState(false);
+   const [categories, setCategories] = useState([]);
+   const [brands, setBrands] = useState([]);
+   const [totalsProduct, setTotalsProduct] = useState(0);
+
+   const handleShowMega = () => {
+      setShowMega(!showMega);
+   };
+
+   // Handle remove item into carts
+   const handleRemoveItemIntoCarts = (id) => {
+      dispatch(removeCart(id));
+   };
+
+   const calcTotalPriceCart = (accumulator, currentValue) => {
+      return accumulator + currentValue.amountOrder * currentValue.unitPrice;
+   };
+
+   // GET CATEGORIES, BRANDS
+   useEffect(() => {
+      // Category
+      CategoryAPI.getAll()
+         .then((res) => {
+            if (res.data) {
+               setCategories(res.data);
+            }
+         })
+         .catch((e) => {
+            console.log(`Get categories failed: ${e}`);
+         });
+      // Brand
+      BrandAPI.getAll()
+         .then((res) => {
+            if (res.data) {
+               setBrands(res.data);
+            }
+         })
+         .catch((e) => {
+            console.log(`Get brands failed: ${e}`);
+         });
+      // Count product
+      ProductAPI.getTotals()
+         .then((res) => {
+            if (res.data) {
+               setTotalsProduct(res.data.productTotal);
+            }
+         })
+         .catch((e) => {
+            console.log(`Count product failed: ${e}`);
+         });
+   }, []);
    return (
       <div className={cx('wrapper')}>
          <div className={cx('header')}>
@@ -41,34 +113,104 @@ function Header() {
                   </div>
                   <div className={cx('right')}>
                      <ul className={cx('flex', 'items-center', 'main-links')}>
-                        <li onClick={() => setShowLoginForm(!showLoginForm)}>
-                           <p>Sign in</p>
-                        </li>
+                        {!userInfo?.id && (
+                           <li onClick={() => setShowLoginForm(!showLoginForm)}>
+                              <p>{t('header.login')}</p>
+                           </li>
+                        )}
+
+                        {userInfo?.id && (
+                           <li>
+                              <Link
+                                 to={'#'}
+                                 className="flex gap-2"
+                                 onClick={() => setShowManageAccount(!showManageAccount)}
+                              >
+                                 <p>{t('header.manageAccount.title')}</p>
+                                 {showManageAccount ? (
+                                    <FontAwesomeIcon icon={faCaretUp} />
+                                 ) : (
+                                    <FontAwesomeIcon icon={faCaretDown} />
+                                 )}
+                              </Link>
+                              <ul className={cx('sub-menu', showManageAccount ? 'show-sub-menu' : null)}>
+                                 <li>
+                                    <Link to={'/profile/updateinfo'}>{t('header.manageAccount.update')}</Link>
+                                 </li>
+                                 <li>
+                                    <Link to={'/profile/changepass'}>{t('header.manageAccount.changePassword')}</Link>
+                                 </li>
+                                 <li>
+                                    <Link to={'#'} onClick={() => dispatch(removeUserInfo())}>
+                                       {t('header.manageAccount.logout')}
+                                    </Link>
+                                 </li>
+                              </ul>
+                           </li>
+                        )}
+                        {/* Management Order */}
+                        {userInfo?.id && (
+                           <li>
+                              <Link
+                                 to={'#'}
+                                 className="flex gap-2"
+                                 onClick={() => setShowManageOrder(!showManageOrder)}
+                              >
+                                 <p>{t('header.order.management.title')}</p>
+                                 {showManageOrder ? (
+                                    <FontAwesomeIcon icon={faCaretUp} />
+                                 ) : (
+                                    <FontAwesomeIcon icon={faCaretDown} />
+                                 )}
+                              </Link>
+                              <ul className={cx('sub-menu', showManageOrder ? 'show-sub-menu' : null)}>
+                                 <li>
+                                    <Link to={'/'}>{t('header.order.management.subOrderPending')}</Link>
+                                 </li>
+                                 <li>
+                                    <Link to={'/'}>{t('header.order.management.subOrderHistory')}</Link>
+                                 </li>
+                              </ul>
+                           </li>
+                        )}
+                        {/* FAVORITE PRODUCTS */}
+                        {userInfo?.id && (
+                           <li>
+                              <Link to={'/favorite/products'}>{t('header.favoriteProduct')}</Link>
+                           </li>
+                        )}
+                        {!userInfo?.id && (
+                           <li>
+                              <Link to={'/'}>{t('header.order.tracking')}</Link>
+                           </li>
+                        )}
                         <li>
-                           <Link to={'/'}>
-                              My Account <FontAwesomeIcon icon={faAngleDown} />
-                           </Link>
-                           <ul className={cx('sub-menu')}>
-                              <li>
-                                 <Link to={'/profile/updateinfo'}>Update info</Link>
-                              </li>
-                              <li>
-                                 <Link to={'/profile/changepass'}>Change password</Link>
-                              </li>
-                              <li>
-                                 <Link to={'/'}>Logout</Link>
-                              </li>
-                           </ul>
+                           <Space wrap>
+                              <Select
+                                 defaultValue="en"
+                                 style={{
+                                    width: 120,
+                                 }}
+                                 onChange={handleChange}
+                                 options={[
+                                    {
+                                       value: 'en',
+                                       label: 'English',
+                                    },
+                                    {
+                                       value: 'vn',
+                                       label: 'Vietnam',
+                                    },
+                                 ]}
+                                 menuItemSelectedIcon={
+                                    <span className={cx('flag-icon')}>
+                                       <FontAwesomeIcon icon={faFlagUsa} />
+                                    </span>
+                                 }
+                              />
+                           </Space>
                         </li>
-                        <li>
-                           <Link to={'/'}>Order Tracking</Link>
-                        </li>
-                        <li>
-                           <Link to={'/'}>
-                              USD <FontAwesomeIcon icon={faAngleDown} />
-                           </Link>
-                        </li>
-                        <li>
+                        {/* <li>
                            <Link to={'/'}>
                               English <FontAwesomeIcon icon={faAngleDown} />
                            </Link>
@@ -86,7 +228,7 @@ function Header() {
                                  <Link to={'/'}>Bahasa</Link>
                               </li>
                            </ul>
-                        </li>
+                        </li> */}
                      </ul>
                   </div>
                </div>
@@ -106,110 +248,99 @@ function Header() {
                      <nav className={cx('mobile-hide')}>
                         <ul className={cx('flex', 'items-center', 'second-links', 'leading-[100px]')}>
                            <li>
-                              <Link to={'/'}>Home</Link>
-                           </li>
-                           <li>
-                              <Link to={'/'}>Shop</Link>
+                              <Link to={'/'}>{t('header.home')}</Link>
                            </li>
                            <li className={cx('has-child')}>
-                              <Link to={'/'}>
-                                 Women
+                              <Link to={'#'} onClick={handleShowMega}>
+                                 {t('header.category')}
                                  <div className={cx('flex', 'items-center', 'icon-small')}>
-                                    <FontAwesomeIcon icon={faAngleDown} />
+                                    {showMega ? (
+                                       <FontAwesomeIcon icon={faCaretUp} />
+                                    ) : (
+                                       <FontAwesomeIcon icon={faCaretDown} />
+                                    )}
                                  </div>
                               </Link>
-                              <div className={cx('mega')}>
+                              <div className={cx('mega', showMega ? 'show-mega' : '')}>
                                  <div className={cx('mega-items')}>
+                                    {/* Đồ gia dụng 1 */}
                                     <div className={cx('flex', 'flex-col', 'gap-[1em]', 'flexcol')}>
                                        <div className={cx('row')}>
-                                          <h4>Women's Clothing</h4>
+                                          <h4>Đồ gia dụng</h4>
                                           <ul>
-                                             <li>
-                                                <Link to={'/'}>Dresses</Link>
-                                             </li>
-                                             <li>
-                                                <Link to={'/'}>Dresses</Link>
-                                             </li>
-                                             <li>
-                                                <Link to={'/'}>Dresses</Link>
-                                             </li>
-                                             <li>
-                                                <Link to={'/'}>Dresses</Link>
-                                             </li>
-                                             <li>
-                                                <Link to={'/'}>Dresses</Link>
-                                             </li>
+                                             {categories
+                                                .slice(0, constants_local.CATEGORY_ITEM_LIMIT_NAV)
+                                                .map((category) => (
+                                                   <li key={category?.id} onClick={handleShowMega}>
+                                                      <Link to={`${routesConfig.category}/${category?.id}`}>
+                                                         {category?.name}
+                                                      </Link>
+                                                   </li>
+                                                ))}
                                           </ul>
                                        </div>
                                     </div>
+                                    {/* Đồ gia dụng 2 */}
                                     <div className={cx('flex', 'flex-col', 'gap-[1em]', 'flexcol')}>
                                        <div className={cx('row')}>
-                                          <h4>Jewelry</h4>
+                                          <h4>Đồ gia dụng</h4>
                                           <ul>
-                                             <li>
-                                                <Link to={'/'}>Dresses</Link>
-                                             </li>
-                                             <li>
-                                                <Link to={'/'}>Dresses</Link>
-                                             </li>
-                                             <li>
-                                                <Link to={'/'}>Dresses</Link>
-                                             </li>
-                                             <li>
-                                                <Link to={'/'}>Dresses</Link>
-                                             </li>
-                                             <li>
-                                                <Link to={'/'}>Dresses</Link>
-                                             </li>
+                                             {categories
+                                                .slice(3, constants_local.CATEGORY_ITEM_LIMIT_NAV * 2)
+                                                .map((category) => (
+                                                   <li key={category?.id} onClick={handleShowMega}>
+                                                      <Link to={`${routesConfig.category}/${category?.id}`}>
+                                                         {category?.name}
+                                                      </Link>
+                                                   </li>
+                                                ))}
                                           </ul>
                                        </div>
                                     </div>
+                                    {/* Đồ gia dụng 3 */}
                                     <div className={cx('flex', 'flex-col', 'gap-[1em]', 'flexcol')}>
                                        <div className={cx('row')}>
-                                          <h4>Beauty</h4>
+                                          <h4>Đồ gia dụng</h4>
                                           <ul>
-                                             <li>
-                                                <Link to={'/'}>Dresses</Link>
-                                             </li>
-                                             <li>
-                                                <Link to={'/'}>Dresses</Link>
-                                             </li>
-                                             <li>
-                                                <Link to={'/'}>Dresses</Link>
-                                             </li>
-                                             <li>
-                                                <Link to={'/'}>Dresses</Link>
-                                             </li>
-                                             <li>
-                                                <Link to={'/'}>Dresses</Link>
-                                             </li>
+                                             {categories
+                                                .slice(
+                                                   6,
+                                                   Math.min(
+                                                      categories.length,
+                                                      constants_local.CATEGORY_ITEM_LIMIT_NAV * 3,
+                                                   ),
+                                                )
+                                                .map((category) => (
+                                                   <li key={category?.id} onClick={handleShowMega}>
+                                                      <Link to={`${routesConfig.category}/${category?.id}`}>
+                                                         {category?.name}
+                                                      </Link>
+                                                   </li>
+                                                ))}
                                           </ul>
                                        </div>
                                     </div>
+                                    {/* Nhãn hiệu */}
                                     <div className={cx('flex', 'flex-col', 'gap-[1em]', 'flexcol')}>
                                        <div className={cx('row')}>
-                                          <h4>Top brands</h4>
+                                          <h4>Nhãn hiệu</h4>
                                           <ul className={cx('women-brands', 'brands')}>
-                                             <li>
-                                                <Link to={'/'}>Nike</Link>
-                                             </li>
-                                             <li>
-                                                <Link to={'/'}>Louis Vuitton</Link>
-                                             </li>
-                                             <li>
-                                                <Link to={'/'}>Louis Vuitton</Link>
-                                             </li>
-                                             <li>
-                                                <Link to={'/'}>Louis Vuitton</Link>
-                                             </li>
-                                             <li>
-                                                <Link to={'/'}>Louis Vuitton</Link>
-                                             </li>
+                                             {brands
+                                                .slice(0, Math.min(brands.length, constants_local.BRAND_ITEM_LIMIT_NAV))
+                                                .map((brand) => (
+                                                   <li key={brand?.id}>
+                                                      <Link to={'/'}>{brand?.name}</Link>
+                                                   </li>
+                                                ))}
                                           </ul>
-                                          <Link to={'/'} className={cx('view-all', 'mt-[16px]')}>
-                                             View all brands
-                                             <FontAwesomeIcon icon={faArrowRight} />
-                                          </Link>
+                                          {brands.length > constants_local.BRAND_ITEM_LIMIT_NAV ? (
+                                             <Link to={'/'} className={cx('view-all', 'mt-[16px]')}>
+                                                Xem tất cả
+                                                <FontAwesomeIcon icon={faArrowRight} />
+                                             </Link>
+                                          ) : (
+                                             ''
+                                          )}
                                        </div>
                                     </div>
                                     <div className={cx('flex', 'flex-col', 'gap-[1em]', 'flexcol', 'products')}>
@@ -233,22 +364,25 @@ function Header() {
                               </div>
                            </li>
                            <li>
-                              <Link to={'/'}>Men</Link>
-                           </li>
-                           <li>
-                              <Link to={'/'}>
-                                 Sports
+                              <Link to={routesConfig.currentCreatedProducts}>
+                                 {t('header.product')}
                                  <div className={cx('fly-item')}>
                                     <span>New!</span>
                                  </div>
                               </Link>
+                           </li>
+                           <li>
+                              <Link to={'/'}>{t('header.support')}</Link>
+                           </li>
+                           <li>
+                              <Link to={'/'}>{t('header.introduction')}</Link>
                            </li>
                         </ul>
                      </nav>
                   </div>
                   <div className={cx('right')}>
                      <ul className={cx('flex', 'items-center', 'second-links')}>
-                        <li className={cx('mobile-hide')}>
+                        {/* <li className={cx('mobile-hide')}>
                            <Link to={'/'}>
                               <div className={cx('icon-large', 'relative', 'flex', 'items-center')}>
                                  <FontAwesomeIcon icon={faHeart} />
@@ -257,19 +391,21 @@ function Header() {
                                  <span className={cx('item-number')}>0</span>
                               </div>
                            </Link>
-                        </li>
+                        </li> */}
                         <li onClick={() => setShowCartMini(!showCartMini)}>
-                           <Link to={'/'} className={cx('iscart')}>
+                           <Link to={'#'} className={cx('iscart')}>
                               <div className={cx('icon-large', 'relative', 'flex', 'items-center')}>
                                  <FontAwesomeIcon icon={faCartShopping} />
-                                 <div className={cx('fly-item')}>
-                                    <span className={cx('item-number')}>0</span>
-                                 </div>
+                                 {carts.length > 0 && (
+                                    <div className={cx('fly-item')}>
+                                       <span className={cx('item-number')}>{carts.length}</span>
+                                    </div>
+                                 )}
                               </div>
-                              <div className={cx('icon-text')}>
+                              {/* <div className={cx('icon-text')}>
                                  <div className={cx('mini-text')}>Total</div>
                                  <div className={cx('cart-total')}>$0.00</div>
-                              </div>
+                              </div> */}
                            </Link>
                            {/* <div className={cx('mini-cart')}>
                               <div className={cx('content')}>
@@ -297,11 +433,18 @@ function Header() {
                                              <FontAwesomeIcon icon={faXmark} />
                                           </Link>
                                        </li>
-                                    </ul>
-                                 </div>
-                              </div>
-                           </div> */}
+                                       </ul>
+                                       </div>
+                                       </div>
+                                    </div> */}
                         </li>
+                        {userInfo?.id && (
+                           <li className={cx('relative', 'avatar-container')}>
+                              <div className={cx('avatar-box')}>
+                                 <p className={cx('avatar-name')}>LP</p>
+                              </div>
+                           </li>
+                        )}
                      </ul>
                   </div>
                </div>
@@ -312,8 +455,10 @@ function Header() {
                   <div className={cx('left')}>
                      <div className={cx('dpt-cat')}>
                         <div className={cx('dpt-head')}>
-                           <div className={cx('main-text')}>All Departments</div>
-                           <div className={cx('mini-text', 'mobile-hide')}>Total 1050 Products</div>
+                           <div className={cx('main-text')}>{t('header.product')}</div>
+                           <div className={cx('mini-text', 'mobile-hide')}>
+                              {t('header.total')} {totalsProduct} {t('header.product').toLowerCase()}
+                           </div>
                            <Link to={'/'} className={cx('dpt-trigger', 'mobie-hide')}>
                               <FontAwesomeIcon icon={faBarsStaggered} />
                            </Link>
@@ -321,64 +466,51 @@ function Header() {
                      </div>
                   </div>
                   <div className={cx('right')}>
-                     <div className={cx('search-box')}>
-                        <form action="" className={cx('search')}>
-                           <span className={cx('icon-large', 'relative', 'flex', 'items-center')}>
-                              <FontAwesomeIcon icon={faSearch} />
-                           </span>
-                           <input type={'search'} name="" id="" placeholder="Search for products" />
-                           <button type="submit">Search</button>
-                        </form>
-                     </div>
+                     {/* Search product */}
+                     <Search />
                   </div>
                </div>
             </div>
             {/* Cart mini */}
             <div>
                <div className={cx('shopping-cart', showCartMini ? styles.active : '')}>
-                  <div className={cx('box')}>
-                     <FontAwesomeIcon icon={faXmark} />
-                     <div className={cx('box-img')}>
-                        <Image src={images.thumbnail} alt="" />
-                     </div>
-                     <div className={cx('content')}>
-                        <h3>Cây chùi nhà đa năng</h3>
-                        <span className={cx('price')}>$4.99/-</span>
-                        <span className={cx('quantity')}>qty : 1</span>
-                     </div>
+                  <div className={cx('box-container')}>
+                     {carts.length > 0 ? (
+                        carts.map((item) => (
+                           <div className={cx('box')} key={item.id}>
+                              <FontAwesomeIcon icon={faXmark} onClick={() => handleRemoveItemIntoCarts(item.id)} />
+                              <div className={cx('box-img')}>
+                                 <Image src={images.thumbnail} alt="" />
+                              </div>
+                              <div className={cx('content')}>
+                                 <h3>{item?.name}</h3>
+                                 <span className={cx('price')}>{formatCurrency('vi-VN', item?.unitPrice)} -</span>
+                                 <span className={cx('quantity')}>
+                                    {t('cart.quantity')} : {item?.amountOrder}
+                                 </span>
+                              </div>
+                           </div>
+                        ))
+                     ) : (
+                        <div className={cx('cart-empty')}>
+                           <p>{t('cart.empty')}</p>
+                           <FontAwesomeIcon icon={faCartShopping} />
+                        </div>
+                     )}
                   </div>
-                  <div className={cx('box')}>
-                     <FontAwesomeIcon icon={faXmark} />
-                     <div className={cx('box-img')}>
-                        <Image src={images.thumbnail} alt="" />
-                     </div>
-                     <div className={cx('content')}>
-                        <h3>Cây chùi nhà đa năng</h3>
-                        <span className={cx('price')}>$4.99/-</span>
-                        <span className={cx('quantity')}>qty : 1</span>
-                     </div>
-                  </div>
-                  <div className={cx('box')} alt="Cây chùi nhà đa năng">
-                     <FontAwesomeIcon icon={faXmark} />
-                     <div className={cx('box-img')}>
-                        <Image src={images.thumbnail} alt="" />
-                     </div>
-                     <div className={cx('content')}>
-                        <h3>Cây chùi nhà đa năng</h3>
-                        <span className={cx('price')}>$4.99/-</span>
-                        <span className={cx('quantity')}>qty : 1</span>
-                     </div>
-                  </div>
-                  <div className={cx('total')}>
-                     <h4 className="total-heading">Subtotal: </h4>
-                     <h3 className="total-price">$1,622.95</h3>
-                  </div>
-                  <Link to={'/'} className={cx('btn')}>
-                     Checkout
-                  </Link>
-                  <Link to={'/'} className={cx('btn')}>
-                     View cart
-                  </Link>
+                  {carts.length > 0 ? (
+                     <>
+                        <div className={cx('total')}>
+                           <h4 className="total-heading">{t('cart.subTotal')}: </h4>
+                           <h3 className="total-price">
+                              {formatCurrency('vi-VN', carts.reduce(calcTotalPriceCart, 0))}
+                           </h3>
+                        </div>
+                        <Link to={routesConfig.checkout} className={cx('btn')} onClick={() => setShowCartMini(false)}>
+                           Checkout
+                        </Link>
+                     </>
+                  ) : null}
                </div>
             </div>
          </div>

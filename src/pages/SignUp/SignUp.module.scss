@@ -1,5 +1,18 @@
 .page-wrapper {
    min-height: 100vh;
+   position: relative;
+   .back-home {
+      position: absolute;
+      padding-left: 50px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      color: white;
+      transition: 0.3s ease;
+      &:hover {
+         padding-left: 40px;
+      }
+   }
    &.bg-gra-02 {
       background: -webkit-gradient(linear, left bottom, right top, from(#fc2c77), to(#6c4079));
       background: -webkit-linear-gradient(bottom left, #fc2c77 0%, #6c4079 100%);
@@ -50,7 +63,6 @@
                   .label {
                      font-size: 16px;
                      color: #555;
-                     text-transform: capitalize;
                      display: block;
                      margin-bottom: 5px;
                   }
