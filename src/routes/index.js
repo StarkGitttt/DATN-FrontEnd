@@ -5,13 +5,15 @@ import Category from '~/pages/Category';
 import ProductDetails from '~/pages/ProductDetails';
 import SearchProduct from '~/pages/SearchProduct';
 import Checkout from '~/pages/Checkout';
-import OrderStatus from '~/pages/OrderStatus';
 import SignUp from '~/pages/SignUp';
-import { CheckoutStepLogin, CheckoutStepShipping, CheckoutStepPayment } from '~/pages/CheckoutStep';
+import OrderDetails from '~/pages/OrderDetails';
+import CheckoutStep from '~/pages/CheckoutStep';
+import OrderTracking from '~/pages/OrderTracking';
+
 // PAGES REQUIRED LOGIN
+import { HistoryOrder, PendingOrder, CancelOrder } from '~/pages/OrderStatus';
 import Profile from '~/pages/Profile';
 import RecoverPass from '~/pages/RecoverPassword';
-import OrderHistory from '~/pages/OrderHistory';
 import FavoriteProducts from '~/pages/FavoriteProducts';
 import NewProducts from '~/pages/NewProducts';
 
@@ -22,21 +24,22 @@ const publicRoutes = [
    { path: routesConfig.productDetails, component: ProductDetails },
    { path: routesConfig.searchProduct, component: SearchProduct },
    { path: routesConfig.checkout, component: Checkout },
-   { path: routesConfig.checkoutLogin, component: CheckoutStepLogin },
-   { path: routesConfig.checkoutShipping, component: CheckoutStepShipping },
-   { path: routesConfig.checkoutPayment, component: CheckoutStepPayment },
-   { path: routesConfig.orderStatus, component: OrderStatus },
+   { path: routesConfig.checkoutStep, component: CheckoutStep },
    { path: routesConfig.signup, component: SignUp, layout: null },
    { path: routesConfig.favoriteProducts, component: FavoriteProducts },
    { path: routesConfig.currentCreatedProducts, component: NewProducts },
+   { path: routesConfig.orderTracking, component: OrderTracking },
 ];
 
 // ROUTES REQUIRED LOGIN
 const privateRoutes = [
    { path: '/profile/:type', component: Profile },
    { path: '/recoverpass', component: RecoverPass },
-   { path: '/order/history', component: OrderHistory },
    { path: '/product/favorite', component: FavoriteProducts },
+   { path: routesConfig.orderSuccess, component: HistoryOrder },
+   { path: routesConfig.orderPending, component: PendingOrder },
+   { path: routesConfig.orderCancel, component: CancelOrder },
+   { path: `${routesConfig.orderDetails}/:idOrder`, component: OrderDetails },
 ];
 
 export { publicRoutes, privateRoutes };

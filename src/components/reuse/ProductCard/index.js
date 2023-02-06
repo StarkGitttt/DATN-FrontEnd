@@ -73,7 +73,7 @@ function ProductCard({ data }) {
                   className={cx('product-img', 'hover')}
                />
             </Link>
-            <p className={cx('showcase-badge', 'angle', 'black')}>15%</p>
+            {/* <p className={cx('showcase-badge', 'angle', 'black')}>15%</p> */}
 
             <div className={cx('showcase-actions')}>
                <button
@@ -124,7 +124,7 @@ function ProductCard({ data }) {
 
             <div className={cx('price-box')}>
                <p className={cx('price')}>{data?.unitPrice ? formatCurrency('vi-VN', data?.unitPrice) : '48.00'}</p>
-               <del>{formatCurrency('vi-VN', 760)}</del>
+               {/* <del>{formatCurrency('vi-VN', 760)}</del> */}
             </div>
          </div>
       </div>

@@ -1,8 +1,9 @@
+import { useState } from 'react';
 import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 
 import classNames from 'classnames/bind';
 import styles from './SignUp.module.scss';
@@ -10,10 +11,12 @@ import constants_local from '~/constants';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { UserAPI } from '~/api/EcommerceApi';
+import Loading from '~/components/reuse/Loading';
 
 const cx = classNames.bind(styles);
 
 function SignUp() {
+   const [loading, setLoading] = useState(false);
    const inputRef = useRef();
    const formik = useFormik({
       initialValues: {
@@ -47,20 +50,25 @@ function SignUp() {
             .required(constants_local.ERROR_REQUIRED_MESSAGE),
       }),
       onSubmit: (values, { resetForm }) => {
-         UserAPI.register(values)
-            .then((res) => {
-               if (res.data) {
-                  console.log(res.data);
-                  toast.success('Đăng ký tài khoản thành công!');
-                  resetForm();
-               }
-            })
-            .catch((e) => {
-               if (e?.response?.data?.detailErrors?.email) {
-                  toast.warning(e?.response?.data?.detailErrors?.email);
-               }
-               console.log('Register not success ', e);
-            });
+         setLoading(true);
+         const register = async () =>
+            await UserAPI.register(values)
+               .then((res) => {
+                  if (res.data) {
+                     console.log(res.data);
+                     toast.success('Đăng ký tài khoản thành công!');
+                     resetForm();
+                     setLoading(false);
+                  }
+               })
+               .catch((e) => {
+                  if (e?.response?.data?.detailErrors?.email) {
+                     toast.warning(e?.response?.data?.detailErrors?.email);
+                  }
+                  console.log('Register not success ', e);
+                  setLoading(false);
+               });
+         register();
       },
       onReset: () => {
          inputRef.current.focus();
@@ -262,7 +270,14 @@ function SignUp() {
                </div>
             </div>
          </div>
-         {/* <ToastContainer /> */}
+         <Loading
+            loading={loading}
+            setLoading={setLoading}
+            type={'spin'}
+            color={'#ff6b6b'}
+            width={'3%'}
+            height={'3%'}
+         />
       </div>
    );
 }
