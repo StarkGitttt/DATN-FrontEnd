@@ -37,6 +37,7 @@ function Header() {
    const carts = useSelector((state) => state.user.userCarts);
    const dispatch = useDispatch();
 
+   // const [changeLng, setChaneLng] = useState(true);
    const [showManageAccount, setShowManageAccount] = useState(false);
    const [showManageOrder, setShowManageOrder] = useState(false);
    const [showCartMini, setShowCartMini] = useState(false);
@@ -165,10 +166,19 @@ function Header() {
                               </Link>
                               <ul className={cx('sub-menu', showManageOrder ? 'show-sub-menu' : null)}>
                                  <li>
-                                    <Link to={'/'}>{t('header.order.management.subOrderPending')}</Link>
+                                    <Link to={routesConfig.orderPending}>
+                                       {t('header.order.management.subOrderPending')}
+                                    </Link>
                                  </li>
                                  <li>
-                                    <Link to={'/'}>{t('header.order.management.subOrderHistory')}</Link>
+                                    <Link to={routesConfig.orderSuccess}>
+                                       {t('header.order.management.subOrderHistory')}
+                                    </Link>
+                                 </li>
+                                 <li>
+                                    <Link to={routesConfig.orderCancel}>
+                                       {t('header.order.management.subOrderCancel')}
+                                    </Link>
                                  </li>
                               </ul>
                            </li>
@@ -181,7 +191,7 @@ function Header() {
                         )}
                         {!userInfo?.id && (
                            <li>
-                              <Link to={'/'}>{t('header.order.tracking')}</Link>
+                              <Link to={routesConfig.orderTracking}>{t('header.order.tracking')}</Link>
                            </li>
                         )}
                         <li>
@@ -210,24 +220,10 @@ function Header() {
                               />
                            </Space>
                         </li>
-                        {/* <li>
-                           <Link to={'/'}>
-                              English <FontAwesomeIcon icon={faAngleDown} />
-                           </Link>
-                           <ul>
-                              <li className={cx('current')}>
-                                 <Link to={'/'}>English</Link>
-                              </li>
-                              <li>
-                                 <Link to={'/'}>German</Link>
-                              </li>
-                              <li>
-                                 <Link to={'/'}>Spanish</Link>
-                              </li>
-                              <li>
-                                 <Link to={'/'}>Bahasa</Link>
-                              </li>
-                           </ul>
+                        {/* <li onClick={() => setChaneLng(!changeLng)}>
+                           <div className="radio-btn">
+                              <div className={`radio-inner ${changeLng ? 'active' : ''}`}></div>
+                           </div>
                         </li> */}
                      </ul>
                   </div>

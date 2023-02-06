@@ -7,11 +7,16 @@ const routes = {
    favoriteProducts: '/favorite/products',
    currentCreatedProducts: '/products/new',
    checkout: '/checkout',
-   checkoutLogin: '/checkout/login',
-   checkoutShipping: '/checkout/shipping',
-   checkoutPayment: '/checkout/payment',
-   orderStatus: '/order/status',
+   checkoutStep: '/checkout/:step',
+   checkoutLogin: '/checkout/temp/login',
+   checkoutShipping: '/checkout/temp/shipping',
+   checkoutPayment: '/checkout/temp/payment',
    signup: '/signup',
+   orderPending: '/order/pending',
+   orderCancel: '/order/cancel',
+   orderSuccess: '/order/history',
+   orderDetails: '/order/details',
+   orderTracking: '/order/tracking',
 };
 
 export default routes;

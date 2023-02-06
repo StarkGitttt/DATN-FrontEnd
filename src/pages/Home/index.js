@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { Pagination } from 'swiper';
+import { toast } from 'react-toastify';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import {
    faPlus,
@@ -20,18 +22,22 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames/bind';
 import 'swiper/css/bundle';
 
+import { addCart } from '~/features/user/userSlice';
+import { CategoryAPI, ProductAPI } from '~/api/EcommerceApi';
+import { formatCurrency } from '~/utils';
 import styles from './Home.module.scss';
+import images from '~/assets/images';
+import routesConfig from '~/config/routes';
+import constants_local from '~/constants';
 import Image from '~/components/reuse/Image';
 import ProductCard from '~/components/reuse/ProductCard';
-import images from '~/assets/images';
-import { CategoryAPI, ProductAPI } from '~/api/EcommerceApi';
-import routesConfig from '~/config/routes';
-import { formatCurrency } from '~/utils';
-import constants_local from '~/constants';
 
 const cx = classNames.bind(styles);
 function Home() {
    const { t } = useTranslation();
+
+   const userCarts = useSelector((state) => state.user.userCarts);
+   const dispatch = useDispatch();
 
    const [active, setAcitve] = useState(false);
    const [categories, setCategories] = useState([]);
@@ -40,6 +46,7 @@ function Home() {
    const [dealTodayProducts, setDealTodayProducts] = useState([]);
    const [bestSellerProducts, setBestSellerProducts] = useState([]);
    const [suggestionProducts, setSuggestionProducts] = useState([]);
+
    // const calcSoldProduct = async (productId) => {
    //    try {
    //       const res = await ProductAPI.totalSoldByProductId({}, productId);
@@ -58,6 +65,16 @@ function Home() {
    const calcStockProcess = (product) => {
       const totalProduct = product.totalSoldProduct + product.quantity;
       return (product.totalSoldProduct * 100) / totalProduct;
+   };
+
+   const handleAddProdToCart = (product) => {
+      const findCart = userCarts.find((cart) => cart.id === product.id);
+      if (findCart?.amountOrder && findCart.amountOrder + 1 > findCart.quantity) {
+         toast.warning(t('cart.message.add.warningMaxQty', { amount: findCart.quantity }));
+         return;
+      }
+      dispatch(addCart({ ...product, amountOrder: 1 }));
+      toast.success(t('cart.message.add.success', { name: product?.name }));
    };
 
    useEffect(() => {
@@ -137,51 +154,6 @@ function Home() {
          {/* <!--- DPT-MENU ---> */}
          <div className={cx('dpt-menu')}>
             <ul className={cx('second-links', 'relative')}>
-               {/* <li className={cx('has-child', 'beauty')}>
-                  <Link to={'/'} className={cx('flex', 'menu-title')}>
-                     <div className={cx('icon-large', 'relative', 'flex', 'items-center')}>
-                        <FontAwesomeIcon icon={faBattery} />
-                     </div>
-                     Beauty
-                     <div className={cx('flex', 'items-center', 'icon-small')}>
-                        <FontAwesomeIcon icon={faCaretRight} />
-                     </div>
-                  </Link>
-                  <ul>
-                     <li>
-                        <Link to={'/'}>Makeup</Link>
-                     </li>
-                     <li>
-                        <Link to={'/'}>Skin Care</Link>
-                     </li>
-                     <li>
-                        <Link to={'/'}>Fragrance</Link>
-                     </li>
-                     <li>
-                        <Link to={'/'}>Foot & Hand Care</Link>
-                     </li>
-                     <li>
-                        <Link to={'/'}>Tools & Accessories</Link>
-                     </li>
-                     <li>
-                        <Link to={'/'}>Shave & Hair Removal</Link>
-                     </li>
-                     <li>
-                        <Link to={'/'}>Personal Care</Link>
-                     </li>
-                     <li>
-                        <Link to={'/'}>Hair Care</Link>
-                     </li>
-                  </ul>
-               </li>
-                <li>
-                  <Link to={'/'} className={cx('flex', 'menu-title')}>
-                     <div className={cx('icon-large', 'relative', 'flex', 'items-center')}>
-                        <FontAwesomeIcon icon={faBattery} />
-                     </div>
-                     Best Seller
-                  </Link>
-               </li>  */}
                {categories.slice(0, Math.min(categories.length, 10)).map((category) => (
                   <li key={category?.id}>
                      <Link to={`${routesConfig.category}/${category?.id}`} className={cx('flex', 'menu-title')}>
@@ -386,7 +358,7 @@ function Home() {
                                        <FontAwesomeIcon icon={faStar} />
                                     </div>
                                     <div className={cx('price-box')}>
-                                       <del>$5.00</del>
+                                       {/* <del>$5.00</del> */}
                                        <p className={cx('price')}>{formatCurrency('vi-VN', item.unitPrice)}</p>
                                     </div>
                                  </div>
@@ -410,7 +382,7 @@ function Home() {
                               <div className={cx('showcase')}>
                                  <div className={cx('showcase-banner')}>
                                     <Image
-                                       src={images.thumbnail}
+                                       src={product.image ? product.image : images.thumbnail}
                                        alt="shampoo, conditioner & facewash packs"
                                        className={cx('showcase-img')}
                                     />
@@ -434,10 +406,12 @@ function Home() {
                                     <div className={cx('price-box')}>
                                        <p className={cx('price')}>{formatCurrency('vi-VN', product?.unitPrice)}</p>
 
-                                       <del>$200.00</del>
+                                       {/* <del>$200.00</del> */}
                                     </div>
 
-                                    <button className={cx('add-cart-btn')}>{t('cart.addCart')}</button>
+                                    <button className={cx('add-cart-btn')} onClick={() => handleAddProdToCart(product)}>
+                                       {t('cart.addCart')}
+                                    </button>
 
                                     <div className={cx('showcase-status')}>
                                        <div className={cx('wrapper')}>

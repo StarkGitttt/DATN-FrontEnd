@@ -1,23 +1,64 @@
+import { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCartShopping } from '@fortawesome/free-solid-svg-icons';
+import { toast } from 'react-toastify';
 import classNames from 'classnames/bind';
 
 import { plusOrMinusItemAmountCart, resetItemAmountCart, removeCart } from '~/features/user/userSlice';
+import { formatCurrency } from '~/utils';
+import routes from '~/config/routes';
 import styles from './Checkout.module.scss';
 import images from '~/assets/images';
 import Image from '~/components/reuse/Image';
-import { formatCurrency } from '~/utils';
-import { toast } from 'react-toastify';
-import { faCartShopping } from '@fortawesome/free-solid-svg-icons';
+import Loading from '~/components/reuse/Loading';
+
 const cx = classNames.bind(styles);
 
 function Checkout() {
-   const { t } = useTranslation();
-
-   const carts = useSelector((state) => state.user.userCarts);
    const dispatch = useDispatch();
+   const userInfo = useSelector((state) => state.user.userInfo);
+   const userIdStep = useSelector((state) => state.user.userIdStep);
+   const userAddressShipping = useSelector((state) => state.user.userAddressShipping);
+   const carts = useSelector((state) => state.user.userCarts);
+   // Translation
+   const { t } = useTranslation();
+   // Loading
+   const [loading, setLoading] = useState(false);
+   // Redirect url
+   const naviagate = useNavigate();
+
+   const handleRedirectUrl = () => {
+      setLoading(true);
+      setTimeout(() => {
+         if (!userInfo?.id) {
+            console.log('Id Step', userIdStep);
+            if (!userIdStep || userIdStep === '@login') {
+               naviagate(`${routes.checkout}/@login`);
+            } else if (userIdStep === '@shipping') {
+               naviagate(`${routes.checkout}/@shipping`);
+            } else if (userIdStep === '@payment' && userAddressShipping?.id) {
+               naviagate(`${routes.checkout}/@payment`);
+            } else {
+               naviagate(`${routes.checkout}/@login`);
+            }
+         } else {
+            if (userAddressShipping?.id) {
+               console.log('Step payment');
+               naviagate(`${routes.checkout}/@payment`);
+            } else if (userIdStep === '@shipping') {
+               naviagate(`${routes.checkout}/@shipping`);
+            } else if (userIdStep === '@payment' && userAddressShipping?.id) {
+               naviagate(`${routes.checkout}/@payment`);
+            } else {
+               naviagate(`${routes.checkout}/@login`);
+            }
+         }
+      }, 1500);
+   };
+
    const calcTotalPriceCart = (accumulator, currentValue) => {
       return accumulator + currentValue.amountOrder * currentValue.unitPrice;
    };
@@ -41,7 +82,6 @@ function Checkout() {
       dispatch(plusOrMinusItemAmountCart({ id: cart.id, amountOrder: Number(amount) }));
    };
    const handleChanAmountItemFromInput = (amount, cart) => {
-      console.log('Amount change', amount);
       if (amount <= 0 || !amount) {
          return;
       }
@@ -263,7 +303,7 @@ function Checkout() {
                               </table>
                            </div>
                         </div>
-                        <button className={cx('cart-btn-checkout')}>
+                        <button className={cx('cart-btn-checkout')} type="button" onClick={handleRedirectUrl}>
                            <span>{t('checkout.subTotal.payment')}</span>
                            <span>{formatCurrency('vi-VN', carts.reduce(calcTotalPriceCart, 0))}</span>
                         </button>
@@ -277,6 +317,14 @@ function Checkout() {
                <FontAwesomeIcon icon={faCartShopping} />
             </div>
          )}
+         <Loading
+            loading={loading}
+            setLoading={setLoading}
+            type={'spin'}
+            color={'#ff6b6b'}
+            width={'3%'}
+            height={'3%'}
+         />
       </div>
    );
 }

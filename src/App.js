@@ -8,6 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { Provider } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
 
+import ScrollToTop from './components/reuse/ScrollToTop';
 import { store } from '~/redux/store';
 import { publicRoutes, privateRoutes } from './routes';
 import { DefaultLayout } from './components/layouts';
@@ -25,6 +26,7 @@ function App() {
    return (
       <Provider store={store}>
          <Router>
+            <ScrollToTop />
             <div className="App">
                <Routes>
                   {/* Public routes */}

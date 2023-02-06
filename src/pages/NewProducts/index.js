@@ -14,6 +14,7 @@ function NewProducts() {
    const [pageable, setPageable] = useState({});
    const [page, setPage] = useState(1);
    useEffect(() => {
+      window.scrollTo(0, 0);
       ProductAPI.getCurrentCreated({
          params: {
             curPage: page,

@@ -1,0 +1,21 @@
+.wrapper {
+   padding: 20px 20px;
+   .cart-empty {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      .cart-empty-title {
+         display: flex;
+         align-items: center;
+         gap: 30px;
+      }
+      .cart-empty-suggestion {
+         strong {
+            &:hover {
+               cursor: pointer;
+               text-decoration: underline;
+            }
+         }
+      }
+   }
+}

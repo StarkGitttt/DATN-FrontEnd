@@ -19,7 +19,14 @@
          "management": {
             "title": "Quản lý đơn hàng",
             "subOrderPending": "Đơn hàng đang đặt",
-            "subOrderHistory": "Lịch sử đặt hàng"
+            "subOrderHistory": "Lịch sử đặt hàng",
+            "subOrderCancel": "Đơn hàng bị hủy"
+         },
+         "search": {
+            "title": "Nhập điện thoại của bạn để tìm đơn hàng",
+            "button": "Tìm kiếm",
+            "input": "Nhập số điện thoại",
+            "notFound": "Không tìm thấy hóa đơn của số điện thoại '{{phone}}'."
          }
       }
    },
@@ -58,10 +65,14 @@
       }
    },
    "cart": {
+      "title": "Giỏ hàng",
       "addCart": "THÊM VÀO GIỎ",
       "quantity": "Số lượng",
       "subTotal": "Tổng tiền",
       "empty": "Giỏ hàng trống",
+      "click": "Bấm vào",
+      "here": "đây",
+      "continue": "để tiếp tục mua sắm",
       "message": {
          "add": {
             "success": "Thêm {{name}} vào giỏ hàng thành công",
@@ -71,6 +82,12 @@
          },
          "remove": {
             "success": "Xóa {{name}} ra khỏi giỏ hàng thành công"
+         }
+      },
+      "error": {
+         "message": "Bạn không có sản phẩm nào trong giỏ hàng của bạn.",
+         "suggestion": {
+            "title": "Có thể bạn quan tâm"
          }
       }
    },
@@ -95,6 +112,19 @@
          "success": "Đăng nhập thành công",
          "forgotPass": "Quên mật khẩu?",
          "invalidPasswordLength": "Vui lòng nhập tối thiểu {{length}} ký tự"
+      },
+      "shipping": {
+         "message": {
+            "error": {
+               "invalidLength": "Vui lòng nhập tối thiểu {{length}} ký tự",
+               "required": "Vui lòng nhập trường này",
+               "invalidPhone": "Số điện thoại không hợp lệ",
+               "invalidEmail": "Email không hợp lệ",
+               "invalidProvince": "Vui lòng chọn thành phố",
+               "invalidDistrict": "Vui lòng chọn quận/huyện",
+               "invalidCommune": "Vui lòng chọn phường/xã"
+            }
+         }
       }
    },
    "details": {
@@ -138,6 +168,99 @@
          "transportFee": "Phí vận chuyển",
          "total": "Tổng số",
          "payment": "Thanh toán"
+      },
+      "step": {
+         "progress": {
+            "back": "Quay lại giỏ hàng",
+            "login": "Đăng nhập",
+            "shipping": "Địa chỉ giao hàng",
+            "payment": "Thanh toán"
+         },
+         "login": {
+            "title": "Đăng nhập",
+            "notLogin": "Chưa đăng nhập",
+            "subTitle": "để nhận nhiều những chương trình ưu đãi hấp dẫn",
+            "member": "Đăng nhập thành viên Routine",
+            "labelUsername": "Email / Số điện thoại",
+            "labelPassword": "Mật khẩu",
+            "forgotPassword": "Quên mật khẩu",
+            "button": "Đăng nhập",
+            "option": {
+               "title": "Mua hàng không cần đăng nhập",
+               "subTitleWelcome": "Chào mừng! Bạn không cần tạo tài khoản",
+               "subTitleOrder": "để đặt hàng",
+               "button": "XÁC NHẬN MUA HÀNG KHÔNG ĐĂNG NHẬP"
+            }
+         },
+         "shipping": {
+            "title": "Địa chỉ giao hàng",
+            "addAddress": "Thêm địa chỉ giao hàng",
+            "fieldFirsname": "Họ",
+            "fieldLastname": "Tên",
+            "fieldPhoneNumber": "Số điện thoại",
+            "fieldEmail": "Email",
+            "fieldAddress": "Địa chỉ",
+            "fieldProvince": "Tỉnh/Thành phố",
+            "fielddDistrict": "Quận/Huyện",
+            "fieldCommune": "Phường/Xã",
+            "placeholderFirsname": "Họ người nhận hàng",
+            "placeholderLastname": "Tên người nhận hàng",
+            "placeholderPhoneNumber": "Số điện thoại",
+            "placeholderEmail": "Email người nhận hàng",
+            "placeholderAddress": "Địa chỉ người nhận hàng",
+            "chooseProvince": "Chọn thành phố",
+            "chooseDistrict": "Chọn quận/huyện",
+            "chooseCommune": "Chọn phường/xã",
+            "button": "Xác nhận giao đến địa chỉ này"
+         },
+         "payment": {
+            "title": "Thanh toán",
+            "change": "Thay đổi",
+            "method": "Phương thức vận chuyển",
+            "economicalDelivery": "Giao hàng tiết kiệm",
+            "methodShipping": "Phương thức thanh toán",
+            "optionShipping": {
+               "optionOne": "Thanh toán khi nhận hàng",
+               "optionTwo": "Thanh toán bằng Momo",
+               "optionTwoSuggestion": "Bạn sẽ quét mã QR để thanh toán"
+            },
+            "yourQR": "Mã QR Của Bạn",
+            "expiryQR": "Mã QR của bạn đã hết thời gian hiệu lực",
+            "success": "Đặt hàng thành công",
+            "expMomo": "Mã QR của bạn hết hạn sau",
+            "note": "Ghi chú đơn hàng",
+            "notLogin": "Vui lòng đăng nhập để thanh toán bằng Momo",
+            "paySuccess": "Thanh toán thành công"
+         }
+      },
+      "countdown": {
+         "success": "Đặt hàng thành công bạn sẽ chuyển về trang chủ sau"
       }
+   },
+   "login": {
+      "required": "Vui lòng đăng nhập để thực hiện chức năng này"
+   },
+   "order": {
+      "id": "Mã hóa đơn",
+      "created": "Ngày tạo",
+      "totalProducts": "Tổng sản phẩm",
+      "totalPrice": "Tổng tiền",
+      "detail": "Chi tiết",
+      "empty": "Danh sách hóa đơn trống",
+      "status": "Trạng thái",
+      "pending": {
+         "title": "Danh sách hóa đơn chờ xác nhận"
+      },
+      "history": {
+         "title": "Danh sách hóa đơn đã xác nhận"
+      },
+      "cancel": {
+         "title": "Danh sách hóa đơn đã hủy"
+      },
+      "idProduct": "Mã sản phẩm",
+      "nameProduct": "Tên sản phẩm",
+      "priceEachProduct": "Giá",
+      "quantityOrderProduct": "Số lượng đặt",
+      "totalProduct": "Tổng tiền"
    }
 }

@@ -19,6 +19,7 @@ function Category() {
    const { categoryId } = useParams();
 
    useEffect(() => {
+      window.scrollTo(0, 0);
       CategoryAPI.getOne(
          {
             params: {
