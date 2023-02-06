@@ -83,3 +83,48 @@ export const BrandAPI = {
       return axiosClient.get(url, params);
    },
 };
+/* ADDRESS API */
+export const AddressAPI = {
+   addShippingAddress: (params = {}) => {
+      const url = `public/address`;
+      return axiosClient.post(url, params);
+   },
+};
+/* ORDER API */
+export const OrderAPI = {
+   createOrderDirectPayment: (params = {}) => {
+      const url = `public/orders`;
+      return axiosClient.post(url, params);
+   },
+   findById: (params = {}) => {
+      const url = `public/orders/find`;
+      return axiosClient.get(url, params);
+   },
+   findByPhone: (params = {}) => {
+      const url = `public/orders`;
+      return axiosClient.get(url, params);
+   },
+   createOrderMomoPayment: (params = {}) => {
+      const url = `user/orders/order_and_pay`;
+      return axiosClient.post(url, params);
+   },
+   findByStatus: (params = {}) => {
+      const url = `user/orders/find/status`;
+      return axiosClient.get(url, params);
+   },
+};
+/* LOCATION API */
+export const LocationAPI = {
+   getProvinces: (params = {}) => {
+      const url = `https://vn-public-apis.fpo.vn/provinces/getAll`;
+      return axiosClient.get(url, params);
+   },
+   getDistrictByIdProvince: (params = {}) => {
+      const url = `https://vn-public-apis.fpo.vn/districts/getByProvince`;
+      return axiosClient.get(url, params);
+   },
+   getWardsByIdDistrict: (params = {}) => {
+      const url = `https://vn-public-apis.fpo.vn/wards/getByDistrict`;
+      return axiosClient.get(url, params);
+   },
+};

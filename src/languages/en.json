@@ -19,7 +19,14 @@
          "management": {
             "title": "Management Order",
             "subOrderPending": "Pending Order",
-            "subOrderHistory": "History Order"
+            "subOrderHistory": "History Order",
+            "subOrderCancel": "Cancel Order"
+         },
+         "search": {
+            "title": "Enter your phone to find orders",
+            "button": "Find",
+            "input": "Type your phone",
+            "notFound": "The invoice of the phone number '{{phone}}' could not be found."
          }
       }
    },
@@ -58,10 +65,14 @@
       }
    },
    "cart": {
+      "title": "Cart",
       "addCart": "ADD TO CART",
       "quantity": "Quantity",
       "subTotal": "Subtotal",
       "empty": "Cart is empty",
+      "click": "Click",
+      "here": "here",
+      "continue": "to continue shopping",
       "message": {
          "add": {
             "success": "Add {{name}} to cart successfully",
@@ -71,6 +82,12 @@
          },
          "remove": {
             "success": "Product {{name}} removed from cart successfully"
+         }
+      },
+      "error": {
+         "message": "You have no products in your shopping cart.",
+         "suggestion": {
+            "title": "Maybe you are interested"
          }
       }
    },
@@ -95,6 +112,19 @@
          "forgotPass": "Forgot password?",
          "success": "Login successfully",
          "invalidPasswordLength": "Please enter min {{length}} character"
+      },
+      "shipping": {
+         "message": {
+            "error": {
+               "invalidLength": "Please enter min {{length}} character",
+               "required": "Please enter this field",
+               "invalidPhone": "Invalid phone number",
+               "invalidEmail": "Invalid email",
+               "invalidProvince": "Please select province",
+               "invalidDistrict": "Please select district",
+               "invalidCommune": "Please select commune"
+            }
+         }
       }
    },
    "details": {
@@ -138,6 +168,99 @@
          "transportFee": "Transport Fee",
          "total": "Total",
          "payment": "PAYMENT"
+      },
+      "step": {
+         "progress": {
+            "back": "Back to cart",
+            "login": "Login",
+            "shipping": "Shipping address",
+            "payment": "Payment"
+         },
+         "login": {
+            "title": "Login",
+            "notLogin": "Not logged in yet",
+            "subTitle": "to receive many attractive promotions",
+            "member": "Login as a Routine member",
+            "labelUsername": "Email / Phone number",
+            "labelPassword": "Password",
+            "forgotPassword": "Forgot password",
+            "button": "Login",
+            "option": {
+               "title": "Purchase without login",
+               "subTitleWelcome": "Welcome! You do not need to create an account",
+               "subTitleOrder": "to order",
+               "button": "PURCHASE CONFIRMATION WITHOUT LOG IN"
+            }
+         },
+         "shipping": {
+            "title": "Shipping address",
+            "addAddress": "Add shipping address",
+            "fieldFirsname": "Firstname",
+            "fieldLastname": "Lastname",
+            "fieldPhoneNumber": "Số điện thoại",
+            "fieldEmail": "Email",
+            "fieldAddress": "Address",
+            "fieldProvince": "Province",
+            "fielddDistrict": "District",
+            "fieldCommune": "Commnune",
+            "placeholderFirsname": "Type your firsname",
+            "placeholderLastname": "Type your lirsname",
+            "placeholderPhoneNumber": "Type your number",
+            "placeholderEmail": "Type your email",
+            "placeholderAddress": "Type your address",
+            "chooseProvince": "Select provice",
+            "chooseDistrict": "Select district",
+            "chooseCommune": "Select commune",
+            "button": "Confirm delivery to this address"
+         },
+         "payment": {
+            "title": "Payment",
+            "change": "CHANGE",
+            "method": "Shipping method",
+            "economicalDelivery": "Economical delivery",
+            "methodShipping": "Shipping method",
+            "optionShipping": {
+               "optionOne": "Payment on delivery",
+               "optionTwo": "Pay with Momo",
+               "optionTwoSuggestion": "You will scan the QR code to pay"
+            },
+            "yourQR": "Your QR Code",
+            "expiryQR": "Your QR code has expired",
+            "success": "Order Success",
+            "expMomo": "Your QR code expires later",
+            "note": "Order Notes",
+            "notLogin": "Please login to pay with Momo",
+            "paySuccess": "Payment success"
+         }
+      },
+      "countdown": {
+         "success": "Your order is successful, you will be redirected to the following homepage"
       }
+   },
+   "login": {
+      "required": "Please login to perform this function"
+   },
+   "order": {
+      "id": "OrderId",
+      "created": "Created At",
+      "totalProducts": "Total Products",
+      "totalPrice": "Total Price",
+      "detail": "Detail",
+      "empty": "Invoice list is empty",
+      "status": "Status",
+      "pending": {
+         "title": "List of invoices waiting for confirmation"
+      },
+      "history": {
+         "title": "List of confirmed invoices"
+      },
+      "cancel": {
+         "title": "List of canceled invoices"
+      },
+      "idProduct": "Product Id",
+      "nameProduct": "Product Name",
+      "priceEachProduct": "Price",
+      "quantityOrderProduct": "Order Quantity",
+      "totalProduct": "Total"
    }
 }

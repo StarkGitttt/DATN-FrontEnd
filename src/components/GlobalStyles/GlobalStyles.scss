@@ -84,7 +84,9 @@
 /**
  * scrollbar style
  */
-
+html {
+   scroll-behavior: smooth;
+}
 body::-webkit-scrollbar {
    width: 15px;
 }
@@ -374,7 +376,50 @@ div[data-tippy-root] {
    color: var(--primary-color);
    font-size: var(--font-small);
 }
-
+.status-0 {
+   color: #ffcc00 !important;
+}
+.status-1 {
+   color: #339900 !important;
+}
+.status-2 {
+   color: #cc3300 !important;
+}
+.radio-btn {
+   width: 60px;
+   height: 30px;
+   padding: 5px;
+   background-color: #27173a;
+   border-radius: 50px;
+   cursor: pointer;
+   overflow: hidden;
+}
+.radio-btn .radio-inner {
+   position: relative;
+   width: 20px;
+   height: 20px;
+   background-color: #ffc207;
+   border-radius: 50%;
+   transition: all 0.5s;
+}
+.radio-inner::before {
+   content: '';
+   position: absolute;
+   left: -40%;
+   width: 100%;
+   height: 100%;
+   // background-color: #27173a;
+   border-radius: 50%;
+   transform: scale(0);
+   transition: all 0.5s;
+}
+.radio-btn .radio-inner.active {
+   transform: translateX(calc(55px - 25px));
+}
+.radio-btn .radio-inner.active::before {
+   left: -25px;
+   transform: scale(1);
+}
 // RESPONSIVE
 @media screen and (min-width: 922px) {
    .container-custom {

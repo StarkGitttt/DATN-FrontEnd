@@ -4,6 +4,9 @@ const initialState = {
    userInfo: {},
    userFavoriteProducts: [],
    userCarts: [],
+   userIdStep: '',
+   userAddressShipping: {},
+   userQRInfo: {},
 };
 
 export const userSlice = createSlice({
@@ -67,11 +70,15 @@ export const userSlice = createSlice({
          }
          cartsFilters.push(payload);
          state.userCarts = cartsFilters;
+         console.log('Current carts: ', state.userCarts);
       },
       removeCart: (state, action) => {
          state.userCarts = Array.from(state.userCarts).filter((cart) => {
             return !cart.id === action.payload.id;
          });
+      },
+      removeAllCartItem: (state) => {
+         state.userCarts = [];
       },
       plusOrMinusItemAmountCart: (state, action) => {
          let currentCarts = state.userCarts;
@@ -91,6 +98,20 @@ export const userSlice = createSlice({
             }
          }
       },
+      // Handle get current checkout step of user
+      updateCurrentCheckoutStep: (state, action) => {
+         state.userIdStep = action.payload;
+      },
+      updateAddressShipping: (state, action) => {
+         state.userAddressShipping = action.payload;
+      },
+      // Handle QR
+      updateQRInfo: (state, action) => {
+         state.userQRInfo = action.payload;
+      },
+      removeQRInfo: (state) => {
+         state.userQRInfo = {};
+      },
    },
 });
 // Action creators are generated for each case reducer function
@@ -101,8 +122,13 @@ export const {
    addOrRemoveFavoriteProduct,
    addCart,
    removeCart,
+   removeAllCartItem,
    plusOrMinusItemAmountCart,
    resetItemAmountCart,
+   updateCurrentCheckoutStep,
+   updateAddressShipping,
+   updateQRInfo,
+   removeQRInfo,
 } = userSlice.actions;
 
 export default userSlice.reducer;
