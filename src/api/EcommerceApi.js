@@ -21,6 +21,14 @@ export const UserAPI = {
       const url = `user/favorites`;
       return axiosClient.post(url, params);
    },
+   genCodeGetPass: (params = {}) => {
+      const url = `public/users/generate-forgot-password`;
+      return axiosClient.post(url, params);
+   },
+   changePassFromCode: (params = {}) => {
+      const url = `public/users/reset-password`;
+      return axiosClient.post(url, params);
+   },
 };
 /* PRODUCT API  */
 export const ProductAPI = {

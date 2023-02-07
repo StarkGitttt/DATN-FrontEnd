@@ -7,6 +7,10 @@ const initialState = {
    userIdStep: '',
    userAddressShipping: {},
    userQRInfo: {},
+   userCodeGetPass: {
+      phone: '',
+      code: '',
+   },
 };
 
 export const userSlice = createSlice({
@@ -112,6 +116,11 @@ export const userSlice = createSlice({
       removeQRInfo: (state) => {
          state.userQRInfo = {};
       },
+      // Handle get password
+      updateCodeGetPass: (state, action) => {
+         console.log('Payload code get pass', action.payload);
+         state.userCodeGetPass = action.payload;
+      },
    },
 });
 // Action creators are generated for each case reducer function
@@ -129,6 +138,7 @@ export const {
    updateAddressShipping,
    updateQRInfo,
    removeQRInfo,
+   updateCodeGetPass,
 } = userSlice.actions;
 
 export default userSlice.reducer;

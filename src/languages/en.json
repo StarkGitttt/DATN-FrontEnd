@@ -125,6 +125,25 @@
                "invalidCommune": "Please select commune"
             }
          }
+      },
+      "getCode": {
+         "fieldPhone": "Phone",
+         "placeholderPhobe": "Type your phone",
+         "success": "A code has been sent to the phone number {{phone}}"
+      },
+      "resetPassword": {
+         "title": "Forgot Password",
+         "button": "Get Code",
+         "fieldPassword": "Password",
+         "fieldConfirmPassword": "Confirm password",
+         "fieldCode": "Code",
+         "placeholderPassword": "Type your password",
+         "placeholderCode": "Type your code",
+         "invalidConfirmPw": "Confirm password is incorrect",
+         "invalidCode": "Invalid authentication code",
+         "invalidRequired": "Please enter this field",
+         "buttonChangePassword": "Confirm",
+         "success": "Update password successfully"
       }
    },
    "details": {

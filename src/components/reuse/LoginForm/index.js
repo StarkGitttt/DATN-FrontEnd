@@ -10,11 +10,12 @@ import { faEye, faEyeSlash, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames/bind';
 
+import { initialFavoriteProduct, addUserInfo } from '~/features/user/userSlice';
+import { UserAPI } from '~/api/EcommerceApi';
 import styles from './LoginForm.module.scss';
 import constants_local from '~/constants';
-import { UserAPI } from '~/api/EcommerceApi';
-import { initialFavoriteProduct, addUserInfo } from '~/features/user/userSlice';
 import Loading from '../Loading';
+import GenCodeForm from '../GenCodeForm';
 
 const cx = classNames.bind(styles);
 
@@ -26,6 +27,7 @@ function LoginForm({ showForm, setShowForm }) {
 
    const [loading, setLoading] = useState(false);
    const [showPassword, setShowPassword] = useState(false);
+   const [showFormResetPw, setShowFormResetPw] = useState(false);
    const formRef = useRef();
    const closeForm = (e) => {
       if (formRef.current === e.target) setShowForm(false);
@@ -167,7 +169,16 @@ function LoginForm({ showForm, setShowForm }) {
 
                      <div className={cx('flex', 'justify-between', 'pb-[25px]')}>
                         <Link to={'/signup'}>{t('form.login.registerMember')}</Link>
-                        <Link to={'/'}>{t('form.login.forgotPass')}</Link>
+                        <p
+                           onClick={() => {
+                              setShowFormResetPw(!showFormResetPw);
+                              setShowForm(!showForm);
+                           }}
+                           className="cursor-pointer"
+                        >
+                           {t('form.login.forgotPass')}
+                        </p>
+                        {/* <Link to={'/'}>{t('form.login.forgotPass')}</Link> */}
                      </div>
 
                      <div className={cx('container-login-form-btn')}>
@@ -214,6 +225,7 @@ function LoginForm({ showForm, setShowForm }) {
                />
             </div>
          ) : null}
+         <GenCodeForm showForm={showFormResetPw} setShowForm={setShowFormResetPw} />
       </>
    );
 }
