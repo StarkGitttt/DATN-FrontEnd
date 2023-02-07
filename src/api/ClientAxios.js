@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { toast } from 'react-toastify';
+// import { toast } from 'react-toastify';
 const axiosClient = axios.create({
    baseURL: `${process.env.REACT_APP_SERVER_API}/api/v1/`,
    headers: {
@@ -27,7 +27,7 @@ axiosClient.interceptors.response.use(
       return response;
    },
    (error) => {
-      toast.error(error.message);
+      // toast.error(error.message);
       console.log('Error Axios', error);
       throw error;
    },

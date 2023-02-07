@@ -125,6 +125,25 @@
                "invalidCommune": "Vui lòng chọn phường/xã"
             }
          }
+      },
+      "getCode": {
+         "fieldPhone": "Số điện thoại",
+         "placeholderPhone": "Nhập số điện thoại",
+         "success": "Một mã code đã gửi tới số điện thoại {{phone}}"
+      },
+      "resetPassword": {
+         "title": "Lấy lại mật khẩu",
+         "button": "Nhận Mã",
+         "fieldPassword": "Mật khẩu",
+         "fieldConfirmPassword": "Nhập lại mật khẩu",
+         "fieldCode": "Code",
+         "placeholderPassword": "Mật khẩu mới",
+         "placeholderCode": "Nhập mã Code",
+         "invalidConfirmPw": "Xác nhận mật khẩu không chính xác",
+         "invalidCode": "Mã xác thực không hợp lệ",
+         "invalidRequired": "Vui lòng nhập trường này",
+         "buttonChangePassword": "Xác nhận",
+         "success": "Cập nhập mật khẩu thành công"
       }
    },
    "details": {
